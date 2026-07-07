@@ -111,15 +111,21 @@ function Highlight({text}) {
   )
 }
 
-/* ── Explanation section header ── */
+/* ── Section label — plain text, no box ── */
 function ExplSection({ label }) {
-  return <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{label}</div>
+  return (
+    <p className="text-[11px] font-bold uppercase tracking-widest mt-5 mb-1.5"
+       style={{ color: '#FF653F' }}>
+      {label}
+    </p>
+  )
 }
 
 /* ── Main explanation renderer ──
-   Handles three input shapes:
-   1. Structured object from uworldify  { approach, formula, steps, correct_reason, distractors, remember_tips }
-   2. Raw engine dict                   { hint, concept, formula, steps, wrong_traps, remember }
+   Teacher-style prose layout — no colored boxes, just clean readable text.
+   Handles:
+   1. Structured engine dict  { hint, concept, formula, steps, wrong_traps, remember }
+   2. Uworldified dict        { approach, formula, steps, correct_reason, distractors, remember_tips }
    3. Plain string fallback
 */
 function ExplanationBody({ q }) {
@@ -127,20 +133,17 @@ function ExplanationBody({ q }) {
   const cor = q?.correct_answer
   const optText = (lbl) => q?.[`option_${String(lbl).toLowerCase()}`] || ''
 
-  // ── shape 1 & 2: object ──────────────────────────────────────────
   if (e && typeof e === 'object' && !Array.isArray(e)) {
-    const approach   = e.approach || e.concept || e.hint || ''
+    const concept    = e.approach || e.concept || e.hint || ''
     const formula    = e.formula  || ''
     const steps      = e.steps    || e.working || []
-    const correctReason = e.correct_reason || e.verify || ''
+    const verify     = e.correct_reason || e.verify || ''
 
-    // distractors: prefer uworldified key, fall back to wrong_traps
     const rawDist    = e.distractors || e.wrong_traps || {}
     const distractors = Object.fromEntries(
       Object.entries(rawDist).filter(([k, v]) => v && k !== cor)
     )
 
-    // remember: prefer array (remember_tips), then single string, then array field
     const tips = (
       Array.isArray(e.remember_tips) && e.remember_tips.length ? e.remember_tips :
       Array.isArray(e.remember)      && e.remember.length      ? e.remember :
@@ -148,116 +151,96 @@ function ExplanationBody({ q }) {
     ).filter(Boolean)
 
     return (
-      <div className="space-y-4 text-[13px] text-gray-700">
+      <div className="text-[13px] text-gray-700 leading-relaxed">
 
-        {/* ── 1. CONCEPT ── */}
-        {(approach || formula) && (
-          <div className="rounded-xl p-3" style={{background:'#FFF8F5', border:'1px solid #FFD9CC'}}>
-            <ExplSection label="How to Solve" />
-            {approach && <p className="leading-relaxed mb-1">{approach}</p>}
-            {formula  && (
-              <p className="font-mono text-xs mt-1 px-2 py-1 rounded-lg inline-block"
-                style={{background:'#FFE8DF', color:'#CC3D00'}}>
-                {formula}
+        {/* ── APPROACH ── */}
+        {(concept || formula) && (
+          <>
+            <ExplSection label="Approach" />
+            {concept && <p className="text-gray-800">{concept}</p>}
+            {formula && (
+              <p className="mt-1 font-semibold" style={{ color: '#CC3D00' }}>
+                Formula: {formula}
               </p>
             )}
-          </div>
+          </>
         )}
 
-        {/* ── 2. SOLUTION STEPS ── */}
+        {/* ── SOLUTION ── */}
         {steps.length > 0 && (
-          <div>
-            <ExplSection label="Solution Steps" />
-            <div className="rounded-xl overflow-hidden border border-gray-100">
+          <>
+            <ExplSection label="Solution" />
+            <div className="space-y-1">
               {steps.map((s, i) => {
-                const label = typeof s === 'string' ? ''   : (s.label || '')
-                const value = typeof s === 'string' ? s    : (s.value || s.text || '')
+                const label = typeof s === 'string' ? null  : (s.label || null)
+                const value = typeof s === 'string' ? s     : (s.value || s.text || '')
                 return (
-                  <div key={i}
-                    className={`grid grid-cols-[45%_55%] gap-3 px-3 py-2 items-baseline
-                      ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                    <span className="text-gray-500 text-xs leading-relaxed">{label}</span>
-                    <span className="font-mono font-semibold text-xs leading-relaxed"
-                      style={{color:'#FF653F'}}>{value}</span>
-                  </div>
+                  <p key={i} className="text-gray-700">
+                    {label && <span className="text-gray-400">{label}: </span>}
+                    <span className="font-semibold" style={{ color: '#333' }}>{value}</span>
+                  </p>
                 )
               })}
             </div>
-          </div>
+          </>
         )}
 
-        {/* ── 3. THE ANSWER ── */}
+        {/* ── CORRECT ANSWER ── */}
         {cor && (
-          <div className="rounded-xl p-3 border border-green-200" style={{background:'#F0FDF4'}}>
-            <ExplSection label="The Answer" />
-            <div className="flex items-start gap-2">
-              <span className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center
-                justify-center text-xs font-black flex-shrink-0 mt-0.5">{cor}</span>
-              <div>
-                <span className="font-bold text-green-800">{optText(cor)}</span>
-                {correctReason && (
-                  <p className="text-gray-600 text-xs mt-0.5 leading-relaxed">{correctReason}</p>
-                )}
-              </div>
-            </div>
-          </div>
+          <>
+            <ExplSection label="Correct Answer" />
+            <p>
+              <span className="font-bold" style={{ color: '#16a34a' }}>
+                Option {cor}{optText(cor) ? ` — ${optText(cor)}` : ''}
+              </span>
+              {verify && <span className="text-gray-500 ml-1">({verify})</span>}
+            </p>
+          </>
         )}
 
-        {/* ── 4. WHY OTHERS ARE WRONG ── */}
+        {/* ── WHY OTHERS ARE WRONG ── */}
         {Object.keys(distractors).length > 0 && (
-          <div>
+          <>
             <ExplSection label="Why Other Options Are Wrong" />
             <div className="space-y-2">
               {Object.entries(distractors).map(([k, v]) => (
-                <div key={k} className="flex gap-3 items-start">
-                  <span className="w-6 h-6 rounded-full border-2 border-red-300 text-red-600
-                    flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5
-                    bg-red-50">{k}</span>
-                  <div>
-                    {optText(k) && (
-                      <span className="font-semibold text-gray-700 text-xs">{optText(k)} — </span>
-                    )}
-                    <span className="text-gray-500 text-xs leading-relaxed">{v}</span>
-                  </div>
-                </div>
+                <p key={k} className="text-gray-700">
+                  <span className="font-bold text-gray-900">Option {k}</span>
+                  {optText(k) && (
+                    <span className="font-semibold text-gray-600"> ({optText(k)})</span>
+                  )}
+                  <span className="text-gray-500"> — {v}</span>
+                </p>
               ))}
             </div>
-          </div>
+          </>
         )}
 
-        {/* ── 5. THINGS TO REMEMBER ── */}
+        {/* ── TIPS ── */}
         {tips.length > 0 && (
-          <div className="rounded-xl p-3" style={{background:'#FFFBEB', border:'1px solid #FDE68A'}}>
-            <ExplSection label="💡 Things to Remember" />
-            <ul className="space-y-1">
-              {tips.map((t, i) => (
-                <li key={i} className="flex gap-2 text-xs text-amber-900 leading-relaxed">
-                  <span className="flex-shrink-0 mt-0.5">•</span>
-                  <span>{t}</span>
-                </li>
-              ))}
+          <>
+            <ExplSection label="Key Points" />
+            <ul className="space-y-0.5 list-disc list-inside text-gray-600">
+              {tips.map((t, i) => <li key={i}>{t}</li>)}
             </ul>
-          </div>
+          </>
         )}
 
       </div>
     )
   }
 
-  // ── shape 3: plain string fallback (unchanged behaviour) ──────────
+  // ── plain string fallback ──────────────────────────────────────────
   const txt = typeof e === 'string' ? e : (e?.hint || e?.verify || '')
   return (
-    <div className="space-y-3 text-[13px] text-gray-700">
+    <div className="text-[13px] text-gray-700 leading-relaxed">
       {cor && (
-        <div className="rounded-xl p-3 border border-green-200" style={{background:'#F0FDF4'}}>
-          <ExplSection label="The Answer" />
-          <span className="font-bold text-green-800">
-            {cor}{optText(cor) ? ` — ${optText(cor)}` : ''}
-          </span>
-        </div>
+        <p className="font-bold mb-2" style={{ color: '#16a34a' }}>
+          Correct Answer: Option {cor}{optText(cor) ? ` — ${optText(cor)}` : ''}
+        </p>
       )}
       {txt
-        ? <p className="leading-relaxed">{txt}</p>
+        ? <p>{txt}</p>
         : <p className="text-gray-400 italic">A detailed explanation for this question is coming soon.</p>}
     </div>
   )
