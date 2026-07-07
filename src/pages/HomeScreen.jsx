@@ -14,7 +14,6 @@ const SvgGear  = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="non
 // ── Colours ───────────────────────────────────────────────────
 const SEC_COLOR = {
   english:'text-emerald-700 bg-emerald-50 border-emerald-200',
-  general_english:'text-emerald-700 bg-emerald-50 border-emerald-200',
   english_language:'text-emerald-700 bg-emerald-50 border-emerald-200',
   numerical_ability:'text-amber-700 bg-amber-50 border-amber-200',
   reasoning:'text-violet-700 bg-violet-50 border-violet-200',
@@ -34,7 +33,7 @@ const SEC_COLOR = {
   general_english:'text-emerald-700 bg-emerald-50 border-emerald-200',
 }
 const SEC_LABEL = {
-  english:'English Language', general_english:'General English',
+  english:'English Language',
   english_language:'English Language', numerical_ability:'Numerical Ability',
   reasoning:'Reasoning Ability', quantitative_aptitude:'Quantitative Aptitude',
   reasoning_computer_aptitude:'Reasoning & Computer Aptitude',
