@@ -165,6 +165,84 @@ function Highlight({text}) {
   )
 }
 
+/* ── Alternate / Shortcut method body ── */
+function ShortcutBody({ q }) {
+  const e = q?.explanation
+  if (!e || typeof e !== 'object' || !e.shortcut) {
+    return (
+      <p className="text-[13px] text-gray-400 italic">
+        No shortcut available for this question type.
+      </p>
+    )
+  }
+  const sc = e.shortcut
+  return (
+    <div className="text-[13px] text-gray-700 leading-relaxed">
+      {sc.title && (
+        <p className="font-bold mb-3" style={{ color: '#CC3D00' }}>
+          {sc.title}
+        </p>
+      )}
+      {Array.isArray(sc.steps) && sc.steps.length > 0 && (
+        <>
+          <ExplSection label="Steps" />
+          <ol className="space-y-1.5 list-decimal list-inside">
+            {sc.steps.map((s, i) => (
+              <li key={i} className="text-gray-700">
+                <MathText text={typeof s === 'string' ? s : (s.value || String(s))} />
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+      {sc.tip && (
+        <>
+          <ExplSection label="Exam Tip" />
+          <p className="text-gray-600 italic">
+            <MathText text={sc.tip} />
+          </p>
+        </>
+      )}
+    </div>
+  )
+}
+
+/* ── Explanation card with Explanation / Alternate Method tabs ── */
+function ExplanationWithTabs({ q }) {
+  const [tab, setTab] = useState('explanation')
+  const e = q?.explanation
+  const hasShortcut = e && typeof e === 'object' && e.shortcut
+
+  return (
+    <div>
+      {hasShortcut && (
+        <div className="flex gap-0 mb-4 border-b border-gray-200">
+          {[
+            { id: 'explanation', label: 'Explanation' },
+            { id: 'alternate',   label: 'Alternate Method' },
+          ].map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`px-4 py-2 text-[13px] font-medium border-b-2 -mb-px transition-colors ${
+                tab === t.id
+                  ? 'border-[#FF653F] text-[#FF653F]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {tab === 'explanation'
+        ? <ExplanationBody q={q} />
+        : <ShortcutBody   q={q} />
+      }
+    </div>
+  )
+}
+
 /* ── Section label — plain text, no box ── */
 function ExplSection({ label }) {
   return (
@@ -1079,7 +1157,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                   {/* RIGHT — the explanation */}
                   <Card title="Explanation" icon="💡">
                     <SeatingDiagram meta={q.metadata} />
-                    <ExplanationBody q={q} />
+                    <ExplanationWithTabs q={q} />
                   </Card>
                 </div>
 
