@@ -2,6 +2,60 @@ import { useState } from 'react'
 import ChartQuestion from '../components/ChartQuestion'
 import QuestionContent from '../components/QuestionContent'
 import { generateMiniTest, generateTest } from '../api.js'
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
+
+/* ── KaTeX helpers ── */
+
+// Convert common arithmetic notation found in DI explanations → LaTeX
+function _toKaTeX(s) {
+  return s
+    .replace(/HCF\((\d[\d,]*),(\d[\d,]*)\)(=\d+)?/g,
+             (_, a, b, eq) => `\\gcd(${a},${b})${eq || ''}`)
+    .replace(/\((\d[\d,]*)\s*\/\s*(\d[\d,]*)\)\s*[×x]\s*(\d+)(\s*=\s*[\d.]+)?/gi,
+             (_, a, b, c, eq) => `\\frac{${a}}{${b}} \\times ${c}${eq || ''}`)
+    .replace(/(\d[\d,]*)\s*÷\s*(\d[\d,]*)(\s*=\s*[\d.]+)?/g,
+             (_, a, b, eq) => `\\frac{${a}}{${b}}${eq || ''}`)
+    .replace(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)(\s*=\s*[\d.]+)?/g,
+             (_, a, b, eq) => `\\frac{${a}}{${b}}${eq || ''}`)
+    .replace(/×/g, '\\times')
+    .replace(/\|([^|]{1,40})\|/g, '\\left|$1\\right|')
+}
+
+// Pattern that identifies math-like substrings worth rendering
+const _MATH_RE = /HCF\(\d[\d,]*,\d[\d,]*\)(?:=\d+)?|\(\d[\d,]*\/\d[\d,]*\)\s*[×x]\s*\d+(?:\s*=\s*[\d.]+)?|\d[\d,]*\s*÷\s*\d[\d,]*(?:\s*=\s*[\d.]+)?|\d[\d,]*\s*\/\s*\d[\d,]*(?:\s*=\s*[\d.]+)?/gi
+
+// Renders text with inline KaTeX for arithmetic patterns; plain text otherwise
+function MathText({ text }) {
+  if (!text || typeof text !== 'string') return <>{text}</>
+
+  const parts = []
+  let last = 0
+  for (const m of text.matchAll(_MATH_RE)) {
+    if (m.index > last) parts.push({ math: false, val: text.slice(last, m.index) })
+    parts.push({ math: true, val: m[0] })
+    last = m.index + m[0].length
+  }
+  if (last < text.length) parts.push({ math: false, val: text.slice(last) })
+
+  if (!parts.some(p => p.math)) return <>{text}</>
+
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (!p.math) return <span key={i}>{p.val}</span>
+        try {
+          const html = katex.renderToString(_toKaTeX(p.val), {
+            throwOnError: false, displayMode: false, output: 'html'
+          })
+          return <span key={i} dangerouslySetInnerHTML={{ __html: html }} />
+        } catch {
+          return <span key={i}>{p.val}</span>
+        }
+      })}
+    </>
+  )
+}
 
 /* ── helpers ── */
 const tName = t => (t||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
@@ -157,10 +211,10 @@ function ExplanationBody({ q }) {
         {(concept || formula) && (
           <>
             <ExplSection label="Approach" />
-            {concept && <p className="text-gray-800">{concept}</p>}
+            {concept && <p className="text-gray-800"><MathText text={concept} /></p>}
             {formula && (
               <p className="mt-1 font-semibold" style={{ color: '#CC3D00' }}>
-                Formula: {formula}
+                Formula: <MathText text={formula} />
               </p>
             )}
           </>
@@ -177,7 +231,9 @@ function ExplanationBody({ q }) {
                 return (
                   <p key={i} className="text-gray-700">
                     {label && <span className="text-gray-400">{label}: </span>}
-                    <span className="font-semibold" style={{ color: '#333' }}>{value}</span>
+                    <span className="font-semibold" style={{ color: '#333' }}>
+                      <MathText text={value} />
+                    </span>
                   </p>
                 )
               })}
@@ -193,7 +249,11 @@ function ExplanationBody({ q }) {
               <span className="font-bold" style={{ color: '#16a34a' }}>
                 Option {cor}{optText(cor) ? ` — ${optText(cor)}` : ''}
               </span>
-              {verify && <span className="text-gray-500 ml-1">({verify})</span>}
+              {verify && (
+                <span className="text-gray-500 ml-1">
+                  (<MathText text={verify} />)
+                </span>
+              )}
             </p>
           </>
         )}
@@ -209,7 +269,7 @@ function ExplanationBody({ q }) {
                   {optText(k) && (
                     <span className="font-semibold text-gray-600"> ({optText(k)})</span>
                   )}
-                  <span className="text-gray-500"> — {v}</span>
+                  <span className="text-gray-500"> — <MathText text={v} /></span>
                 </p>
               ))}
             </div>
@@ -221,7 +281,7 @@ function ExplanationBody({ q }) {
           <>
             <ExplSection label="Key Points" />
             <ul className="space-y-0.5 list-disc list-inside text-gray-600">
-              {tips.map((t, i) => <li key={i}>{t}</li>)}
+              {tips.map((t, i) => <li key={i}><MathText text={t} /></li>)}
             </ul>
           </>
         )}
