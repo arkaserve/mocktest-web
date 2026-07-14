@@ -131,6 +131,15 @@ export const generateMiniTest = (section, topic, count = 10, difficulty = 'mixed
     ...(student_id ? { student_id } : {})
   }).then(r => r.data)
 
+export const generateTopicTest = (section, topic, count = 10, student_id = null) =>
+  api.post('/tests/topic', {
+    exam: 'bank_clerk_prelims',
+    section,
+    topic,
+    count,
+    ...(student_id ? { student_id } : {})
+  }).then(r => r.data)
+
 export const getQuestionCount = () =>
   api.get('/questions/count').then(r => r.data)
 

@@ -58,7 +58,8 @@ function MathText({ text }) {
 }
 
 /* ── helpers ── */
-const tName = t => (t||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+const tName    = t => (t||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+const subLabel = s => (s||'').replace(/\bPct\b/g,'Percentage')
 const fmt   = n  => (n??0).toFixed(1)
 const SEC   = { english:'English', numerical_ability:'Numerical Ability', reasoning:'Reasoning', quantitative_aptitude:'Quant' }
 const CUTOFF_CLS = {
@@ -170,14 +171,14 @@ function ShortcutBody({ q }) {
   const e = q?.explanation
   if (!e || typeof e !== 'object' || !e.shortcut) {
     return (
-      <p className="text-[13px] text-gray-400 italic">
+      <p className="text-[15px] text-gray-400 italic">
         No shortcut available for this question type.
       </p>
     )
   }
   const sc = e.shortcut
   return (
-    <div className="text-[13px] text-gray-700 leading-relaxed">
+    <div className="text-[15px] text-gray-700 leading-relaxed">
       {sc.title && (
         <p className="font-bold mb-3" style={{ color: '#CC3D00' }}>
           {sc.title}
@@ -213,7 +214,7 @@ function FormulaList({ rows, startIndex = 1 }) {
   return (
     <ol className="space-y-1.5">
       {rows.map((row, i) => (
-        <li key={i} className="flex items-baseline gap-2 text-[13px]">
+        <li key={i} className="flex items-baseline gap-2 text-[15px]">
           <span className="shrink-0 w-5 text-right text-[11px] font-semibold text-gray-400">
             {startIndex + i}.
           </span>
@@ -231,7 +232,7 @@ function FormulasBody({ q }) {
   const e = q?.explanation
   const kf = e?.key_formulas
   if (!kf) return (
-    <p className="text-[13px] text-gray-400 italic">No formulas available for this question type.</p>
+    <p className="text-[15px] text-gray-400 italic">No formulas available for this question type.</p>
   )
 
   // count total rows for continuous numbering across sections
@@ -239,7 +240,7 @@ function FormulasBody({ q }) {
   return (
     <div>
       {kf.title && (
-        <p className="font-bold text-[13px] mb-3" style={{ color: '#CC3D00' }}>{kf.title}</p>
+        <p className="font-bold text-[15px] mb-3" style={{ color: '#CC3D00' }}>{kf.title}</p>
       )}
       {Array.isArray(kf.sections)
         ? kf.sections.map((sec, si) => {
@@ -289,7 +290,7 @@ function ExplanationWithTabs({ q }) {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-2 text-[13px] font-medium border-b-2 -mb-px transition-colors ${
+              className={`px-4 py-2 text-[15px] font-medium border-b-2 -mb-px transition-colors ${
                 tab === t.id
                   ? 'border-[#FF653F] text-[#FF653F]'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -310,7 +311,7 @@ function ExplanationWithTabs({ q }) {
 /* ── Section label — plain text, no box ── */
 function ExplSection({ label }) {
   return (
-    <p className="text-[11px] font-bold uppercase tracking-widest mt-5 mb-1.5"
+    <p className="text-[12px] font-bold uppercase tracking-widest mt-5 mb-2"
        style={{ color: '#FF653F' }}>
       {label}
     </p>
@@ -347,7 +348,7 @@ function ExplanationBody({ q }) {
     ).filter(Boolean)
 
     return (
-      <div className="text-[13px] text-gray-700 leading-relaxed">
+      <div className="text-[15px] text-gray-700 leading-relaxed">
 
         {/* ── APPROACH ── */}
         {(concept || formula) && (
@@ -435,7 +436,7 @@ function ExplanationBody({ q }) {
   // ── plain string fallback ──────────────────────────────────────────
   const txt = typeof e === 'string' ? e : (e?.hint || e?.verify || '')
   return (
-    <div className="text-[13px] text-gray-700 leading-relaxed">
+    <div className="text-[15px] text-gray-700 leading-relaxed">
       {cor && (
         <p className="font-bold mb-2" style={{ color: '#16a34a' }}>
           Correct Answer: Option {cor}{optText(cor) ? ` — ${optText(cor)}` : ''}
@@ -586,11 +587,11 @@ function FlagBox({flag}) {
 /* Highlighted "what to do next" banner shown at the top of analysis tabs. */
 function RecoBanner({ children }) {
   return (
-    <div className="rounded-xl border px-4 py-3 flex items-start gap-2.5"
-      style={{ background:'#FFF3EE', borderColor:'#fed7c2' }}>
-      <span className="text-base leading-none">💡</span>
-      <p className="text-xs sm:text-[13px] text-gray-700 leading-relaxed">
-        <b style={{ color:'#FF653F' }}>Recommended:</b> {children}
+    <div className="rounded-2xl border-2 px-5 py-4 flex items-start gap-3"
+      style={{ background:'#FFF3EE', borderColor:'#FF653F' }}>
+      <span className="text-2xl leading-none flex-shrink-0 mt-0.5">💡</span>
+      <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+        <b style={{ color:'#FF653F' }}>Recommended: </b>{children}
       </p>
     </div>
   )
@@ -649,7 +650,8 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
   const peer       = result.peer_comparison        || null
   const topicR     = result.topic_results          || {}
   const name       = studentName || 'Student'
-  const isFullMock = (result.test_type ?? 'full') === 'full'
+  const isFullMock    = (result.test_type ?? 'full') === 'full'
+  const isDiagnostic  = result.test_type === 'topic_diagnostic'
 
   // Rank data from peer comparison (full mock only)
   const peerPct    = peer?.peer_percentile || null
@@ -664,7 +666,10 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
   const DIFF_BADGE  = { easy: {label:'Easy', bg:'#e8f5e9', color:'#2e7d32'}, medium: {label:'Medium', bg:'#fff8e1', color:'#f57f17'}, hard: {label:'Hard', bg:'#fce4ec', color:'#c62828'} }
 
   // Only show analysis tabs for full mock tests
-  const TABS = ALL_TABS.filter(t => !t.fullOnly || isFullMock)
+  const TABS = ALL_TABS.filter(t =>
+    (!t.fullOnly || isFullMock) &&
+    !(isDiagnostic && (t.id === 'topics' || t.id === 'time'))
+  )
 
   return (
     <div className="min-h-screen bg-[#ffffff]" style={{fontFamily:"'Inter',system-ui,sans-serif"}}>
@@ -762,34 +767,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
         {/* ── RIGHT COLUMN: hero + scrolling content ── */}
         <div className="flex-1 min-w-0 flex flex-col overflow-y-auto nice-scroll">
 
-          {/* ── LEVEL-UP / LEVEL FEEDBACK BANNER — mini tests only ── */}
-          {!isFullMock && tab === 'feedback' && levelMsg && (
-            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
-              style={{background: levelUp ? '#f0fdf4' : '#fff8e1', border: levelUp ? '1px solid #86efac' : '1px solid #fcd34d'}}>
-              <span className="text-lg mt-0.5">{levelUp ? '🎉' : '💪'}</span>
-              <div>
-                <p className="font-bold text-gray-800 mb-0.5">{levelUp ? 'Level Up!' : 'Keep Going!'}</p>
-                <p className="text-gray-600 text-xs leading-relaxed">{levelMsg}</p>
-              </div>
-            </div>
-          )}
-
-          {/* ── MINI TEST NOTICE — shown instead of full analysis for practice tests ── */}
-          {!isFullMock && tab === 'feedback' && (
-            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
-              style={{background:'#FFF8F0', border:'1px solid #fec9b0'}}>
-              <span className="text-lg mt-0.5">📝</span>
-              <div>
-                <p className="font-bold text-gray-800 mb-0.5">Practice Test Result</p>
-                <p className="text-gray-500 text-xs leading-relaxed">
-                  Detailed analysis (Weak Areas, Time Analysis, Next Steps) is available only after a <strong>Full Mock Test</strong>.
-                  Take a full mock from the Dashboard to get your complete performance report and rank.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* ── SCORE HERO — only on the Feedback tab ── */}
+          {/* ── SCORE HERO — always first on the Feedback tab ── */}
           {tab==='feedback' && (
           <div className="bg-white border-b border-gray-100 p-4">
             <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,0.9fr)] gap-4 items-stretch">
@@ -820,7 +798,6 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                     <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">✗ {wrong} wrong</span>
                     <span className="text-xs font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-full">— {skipped} skipped</span>
                   </div>
-                  {/* Rank badge — only for full mock tests with enough platform data */}
                   {isFullMock && rankNum && rankTotal && (
                     <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-xs font-bold"
                       style={{background:'linear-gradient(135deg,#FF653F,#cc3d00)'}}>
@@ -828,7 +805,6 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                       <span>Rank #{rankNum} of {rankTotal} students</span>
                     </div>
                   )}
-                  {/* Difficulty level badge — mini tests only */}
                   {!isFullMock && curDiff && DIFF_BADGE[curDiff] && (
                     <div className="mt-2 flex items-center gap-2 flex-wrap">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
@@ -854,12 +830,10 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                     <span className="text-white px-1.5 py-0.5 rounded-full" style={{background:'#FF653F', fontSize:10}}>Smart Analysis</span>
                   </div>
                   <div className="line-clamp-3 text-sm text-gray-700 leading-relaxed">
-                    {/* Drop the greeting + score recap (already shown in the score card) so this
-                        box leads with the actionable insight — warning, priority, what to fix next. */}
                     <Highlight text={
                       (result.ai_feedback||'')
-                        .replace(/^[^.]*\.\s*/, '')                          // greeting sentence
-                        .replace(/You scored[^.]*\.\s*/i, '')                // score recap sentence
+                        .replace(/^[^.]*\.\s*/, '')
+                        .replace(/You scored[^.]*\.\s*/i, '')
                         .trim() || result.ai_feedback
                     }/>
                   </div>
@@ -900,6 +874,130 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
           </div>
           )}
 
+          {/* ── LEVEL-UP / LEVEL FEEDBACK BANNER — mini tests only ── */}
+          {!isFullMock && tab === 'feedback' && levelMsg && (
+            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
+              style={{background: levelUp ? '#f0fdf4' : '#fff8e1', border: levelUp ? '1px solid #86efac' : '1px solid #fcd34d'}}>
+              <span className="text-lg mt-0.5">{levelUp ? '🎉' : '💪'}</span>
+              <div>
+                <p className="font-bold text-gray-800 mb-0.5">{levelUp ? 'Level Up!' : 'Keep Going!'}</p>
+                <p className="text-gray-600 text-xs leading-relaxed">{levelMsg}</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── TOPIC DIAGNOSTIC VERDICT ── */}
+          {isDiagnostic && result.topic_diagnostic && tab === 'feedback' && (() => {
+            const td = result.topic_diagnostic
+            const topicLabel = (td.topic||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+            const bands = [
+              { label:'Easy',   acc:td.easy_accuracy,   count:td.easy_count,   color:'#16a34a', bg:'#f0fdf4', border:'#86efac' },
+              { label:'Medium', acc:td.medium_accuracy, count:td.medium_count, color:'#d97706', bg:'#fffbeb', border:'#fcd34d' },
+              { label:'Hard',   acc:td.hard_accuracy,   count:td.hard_count,   color:'#dc2626', bg:'#fff5f5', border:'#fca5a5' },
+            ]
+            return (
+              <div className="mx-4 mt-4 space-y-3">
+                {/* Level badge */}
+                <div className="rounded-2xl border p-4" style={{background:'#FFF3EE', borderColor:'#fec9b0'}}>
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div>
+                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{topicLabel} — Topic Level</div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-black px-4 py-1 rounded-xl text-white" style={{background: td.level_color||'#FF653F'}}>
+                          {td.level}
+                        </span>
+                        <p className="text-sm text-gray-600 leading-snug max-w-xs">{td.level_desc}</p>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs text-gray-400 mb-0.5">Predicted mock contribution</div>
+                      <div className="text-lg font-black" style={{color:'#FF653F'}}>{td.mock_score_current} / {td.mock_score_potential}</div>
+                      <div className="text-xs text-gray-400">marks in real exam</div>
+                    </div>
+                  </div>
+                </div>
+                {/* Difficulty accuracy bars */}
+                <div className="grid grid-cols-3 gap-2">
+                  {bands.map(b => (
+                    <div key={b.label} className="rounded-xl border p-3 text-center"
+                      style={{background: b.bg, borderColor: b.border}}>
+                      <div className="text-xs font-bold mb-1" style={{color: b.color}}>{b.label}</div>
+                      <div className="text-xl font-black" style={{color: b.color}}>
+                        {b.acc != null ? `${b.acc}%` : '—'}
+                      </div>
+                      <div className="text-xs text-gray-400 mt-0.5">{b.count} question{b.count!==1?'s':''}</div>
+                      {b.acc != null && (
+                        <div className="mt-2 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                          <div className="h-full rounded-full" style={{width:`${b.acc}%`, background: b.color}}/>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {/* Passed / failed sub-types */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {td.passed_subtypes?.length > 0 && (
+                    <div className="rounded-xl border border-green-200 bg-green-50 p-3">
+                      <div className="text-xs font-bold text-green-700 mb-2">What you got right</div>
+                      <div className="flex flex-wrap gap-1">
+                        {td.passed_subtypes.map((s,i) => (
+                          <span key={i} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-800 border border-green-200">{subLabel(s)}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {td.failed_subtypes?.length > 0 && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                      <div className="text-xs font-bold text-red-700 mb-2">Where you dropped marks</div>
+                      <div className="flex flex-wrap gap-1">
+                        {td.failed_subtypes.map((s,i) => (
+                          <span key={i} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200">{subLabel(s)}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {/* 3-step action plan */}
+                <div className="rounded-xl border overflow-hidden" style={{borderColor:'#93C5FD'}}>
+                  <div className="px-4 py-2.5 flex items-center gap-2" style={{background:'#EFF6FF'}}>
+                    <span>🎯</span>
+                    <span className="text-xs font-bold text-blue-800 uppercase tracking-wide">Your Action Plan</span>
+                  </div>
+                  <div className="divide-y divide-blue-100">
+                    {[
+                      { step:1, text: td.next_step },
+                      { step:2, text: td.failed_subtypes?.length > 0
+                          ? `Practise these model types: ${td.failed_subtypes.slice(0,2).map(subLabel).join(', ')} — 10 focused questions each until accuracy crosses 70%`
+                          : 'Continue with mixed practice to maintain accuracy across all model types in this topic' },
+                      { step:3, text: `Predicted ${td.mock_score_current}/${td.mock_score_potential} marks in the real exam — target the full ${td.mock_score_potential} marks by clearing every sub-type` },
+                    ].map(({step, text}) => (
+                      <div key={step} className="flex gap-3 px-4 py-3" style={{background:'#F0F9FF'}}>
+                        <span className="w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5"
+                          style={{background:'#3B82F6'}}>{step}</span>
+                        <p className="text-sm text-blue-900 leading-relaxed">{text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
+
+          {/* ── MINI TEST NOTICE — shown for regular practice tests only (not diagnostic) ── */}
+          {!isFullMock && !isDiagnostic && tab === 'feedback' && (
+            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
+              style={{background:'#FFF8F0', border:'1px solid #fec9b0'}}>
+              <span className="text-lg mt-0.5">📝</span>
+              <div>
+                <p className="font-bold text-gray-800 mb-0.5">Practice Test Result</p>
+                <p className="text-gray-500 text-xs leading-relaxed">
+                  Detailed analysis (Weak Areas, Time Analysis, Next Steps) is available only after a <strong>Full Mock Test</strong>.
+                  Take a full mock from the Dashboard to get your complete performance report and rank.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* ── MAIN CONTENT ── */}
           <main className="flex-1 min-w-0 p-4 sm:p-5 space-y-4">
 
@@ -910,7 +1008,39 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                   (section cut-off lives in the left sidebar already) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 
-                {/* Col 1: How you approached — small scannable boxes */}
+                {/* Col 1: diagnostic → sub-type weakness detail; regular → behaviour flags */}
+                {isDiagnostic && result.topic_diagnostic ? (() => {
+                  const td = result.topic_diagnostic
+                  const topicLabel = (td.topic||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+                  const weakPoints = []
+                  if (td.easy_accuracy != null && td.easy_accuracy < 60)
+                    weakPoints.push({ icon:'🔴', head:`Easy questions need work`, body:`${td.easy_accuracy}% accuracy on ${td.easy_count} easy questions. These are scoring opportunities — every easy question dropped is a mark lost in the actual exam.` })
+                  if (td.medium_accuracy != null && td.medium_accuracy < 50)
+                    weakPoints.push({ icon:'🟠', head:`Medium questions below target`, body:`${td.medium_accuracy}% on ${td.medium_count} medium questions. Medium Qs make up ~40% of the test — closing this gap will move your level up significantly.` })
+                  if (td.hard_accuracy != null && td.hard_accuracy < 40)
+                    weakPoints.push({ icon:'🟡', head:`Hard questions — expected, but fixable`, body:`${td.hard_accuracy}% on ${td.hard_count} hard questions. These don't need mastery yet, but cracking 1–2 extra hard Qs per test can separate you at the cut-off.` })
+                  if (td.failed_subtypes?.length > 0)
+                    td.failed_subtypes.slice(0,3).forEach(s =>
+                      weakPoints.push({ icon:'✗', head:`Gap: ${subLabel(s)}`, body:`You missed questions on "${subLabel(s)}" — learn this model type with 5–8 focused practice questions until it becomes automatic.` })
+                    )
+                  if (weakPoints.length === 0)
+                    weakPoints.push({ icon:'✅', head:'Strong all-round performance', body:`You handled all difficulty bands well on ${topicLabel}. Keep it warm with occasional mixed practice before the exam.` })
+                  return (
+                    <Card title={`${topicLabel} — What to fix`} icon="🎯">
+                      <div className="space-y-2">
+                        {weakPoints.map((p,i) => (
+                          <div key={i} className="flex gap-3 px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50">
+                            <span className="text-base flex-shrink-0 mt-0.5">{p.icon}</span>
+                            <div>
+                              <div className="text-xs font-bold text-gray-800 mb-0.5">{p.head}</div>
+                              <div className="text-xs text-gray-500 leading-snug">{p.body}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  )
+                })() : (
                 <Card title="How you approached this exam" icon="🧠"
                   badge={
                     <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
@@ -924,9 +1054,15 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                     }
                   </div>
                 </Card>
+                )}
 
-                {/* Col 2: Topic Breakdown (mini) OR Cut-off comparison (full mock) */}
-                {!isFullMock && (
+                {/* Col 2: Topic Breakdown (mini/diagnostic) OR Cut-off comparison (full mock) */}
+                {isDiagnostic && (
+                  <Card title="Sub-type Breakdown" icon="📊">
+                    <TopicBreakdown questionResults={result.question_results || []} />
+                  </Card>
+                )}
+                {!isFullMock && !isDiagnostic && (
                   <Card title="Topic Breakdown" icon="📊">
                     <TopicBreakdown questionResults={result.question_results || []} />
                   </Card>
@@ -1205,31 +1341,30 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
               ) : (
               <>
               {/* Legend */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-500 mb-5 pb-3 border-b border-gray-100">
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{background:'#10b981'}}/>Strong (≥60%)</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{background:'#f59e0b'}}/>Needs work (35–59%)</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{background:'#ef4444'}}/>Weak (&lt;35%)</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-gray-300"/>Not attempted</span>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-600 mb-6 pb-4 border-b border-gray-200">
+                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full" style={{background:'#10b981'}}/>Strong (≥60%)</span>
+                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full" style={{background:'#f59e0b'}}/>Needs work (35–59%)</span>
+                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full" style={{background:'#ef4444'}}/>Weak (&lt;35%)</span>
+                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-gray-300"/>Not attempted</span>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {Object.entries(secStats).map(([sec])=>{
                   const secTopics = Object.entries(topicR).filter(([_,v])=>v.section===sec)
                   if (!secTopics.length) return null
-                  // Section roll-up
                   const sTotal = secTopics.reduce((a,[_,v])=> a + (v.total ?? ((v.correct||0)+(v.wrong||0)+(v.skipped||0))), 0)
                   const sCorr  = secTopics.reduce((a,[_,v])=> a + (v.correct||0), 0)
                   const sAcc   = sTotal>0 ? Math.round(sCorr/sTotal*100) : 0
                   const sCol   = sAcc>=60?'#10b981':sAcc>=35?'#f59e0b':'#ef4444'
                   return (
                     <div key={sec}>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{SEC[sec]||sec}</span>
-                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-full" style={{ color:sCol, background:`${sCol}1a` }}>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-base font-extrabold text-gray-700 uppercase tracking-wide">{SEC[sec]||sec}</span>
+                        <span className="text-sm font-bold px-3 py-1 rounded-full" style={{ color:sCol, background:`${sCol}1a` }}>
                           {sAcc}% · {sCorr}/{sTotal}
                         </span>
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {secTopics.map(([topic,ts])=>{
                           const corr  = ts.correct||0
                           const wrng  = ts.wrong||0
@@ -1240,23 +1375,23 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                           const col   = attempted===0 ? '#9ca3af' : acc>=60?'#10b981':acc>=35?'#f59e0b':'#ef4444'
                           const status= attempted===0 ? 'Not attempted' : acc>=60?'Strong' : acc>=35?'Needs work' : 'Weak'
                           return (
-                            <div key={topic} className="flex items-center gap-3 p-3 rounded-xl bg-white border"
-                              style={{ borderColor:`${col}33`, borderLeftColor:col, borderLeftWidth:4 }}>
-                              <div className="w-44 flex-shrink-0 min-w-0">
-                                <div className="text-xs font-bold text-gray-800 truncate">{tName(topic)}</div>
-                                <div className="text-[10px] font-bold uppercase tracking-wide" style={{ color:col }}>{status}</div>
+                            <div key={topic} className="flex items-center gap-4 px-4 py-4 rounded-2xl bg-white border-2"
+                              style={{ borderColor:`${col}44`, borderLeftColor:col, borderLeftWidth:6 }}>
+                              <div className="w-48 flex-shrink-0 min-w-0">
+                                <div className="text-base font-bold text-gray-900 truncate">{tName(topic)}</div>
+                                <div className="text-xs font-bold uppercase tracking-wide mt-0.5" style={{ color:col }}>{status}</div>
                               </div>
-                              <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width:`${acc}%`, background:col }}/>
                               </div>
-                              <span className="text-sm font-black w-11 text-right" style={{ color:col }}>
+                              <span className="text-lg font-black w-14 text-right" style={{ color:col }}>
                                 {attempted===0 ? '—' : `${acc}%`}
                               </span>
-                              <span className="text-[11px] w-40 text-right flex-shrink-0">
-                                <span className="font-bold text-green-600">{corr}✓</span>{' '}
-                                <span className="font-bold text-red-500">{wrng}✗</span>{' '}
-                                <span className="text-gray-400">{skip} skipped</span>
-                                <span className="text-gray-300"> · {total} Qs</span>
+                              <span className="text-sm w-44 text-right flex-shrink-0">
+                                <span className="font-bold text-green-600">{corr} correct</span>
+                                {' · '}
+                                <span className="font-bold text-red-500">{wrng} wrong</span>
+                                {skip > 0 && <span className="text-gray-400"> · {skip} skipped</span>}
                               </span>
                             </div>
                           )

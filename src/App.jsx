@@ -298,6 +298,9 @@ export default function App() {
         const payload = {
           student_id:    user.id,
           exam:          data.exam          || 'bank_clerk_prelims',
+          test_type:     data.test_type     || 'full',
+          topic:         data.topic_diagnostic?.topic || data.topic || null,
+          section:       data.section       || null,
           total_score:   Number(data.score         || 0),
           max_score:     Number(data.max_score      || 0),
           percentage:    Number(data.percentage     || 0),
@@ -311,14 +314,14 @@ export default function App() {
           ai_feedback:    data.ai_feedback   || '',
           exam_readiness: Number(data.exam_readiness || 0),
           test_id_str:    data.test_id       || '',
-          result_json:    data,               // full result for re-opening later
+          result_json:    data,
         }
         let { error } = await supabase.from('results').insert(payload)
-        if (error && /result_json/.test(error.message || '')) {
-          // DB doesn't have result_json yet — save the summary so history isn't lost
-          const { result_json, ...summary } = payload
-          ;({ error } = await supabase.from('results').insert(summary))
-          if (!error) console.warn('Saved result WITHOUT result_json — run the migration to enable question review.')
+        if (error) {
+          // Strip columns that may not exist yet and retry
+          const { result_json, test_type, topic, section, ...base } = payload
+          ;({ error } = await supabase.from('results').insert(base))
+          if (!error) console.warn('Saved result without extended columns — run migration to add test_type/topic/section/result_json.')
         }
         if (error) console.error('Save result error:', error.message)
         else if (import.meta.env.DEV) console.log('✓ Result saved:', data.exam)

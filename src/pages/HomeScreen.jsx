@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { generateTest, generateMiniTest } from '../api.js'
+import { generateTest, generateMiniTest, generateTopicTest } from '../api.js'
 
 // ── Sidebar icons — identical set to the Dashboard sidebar ─────
 const SvgHome  = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l7-7 7 7v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/><path d="M8 19V12h4v7"/></svg>
@@ -269,23 +269,29 @@ function FullMockTab({ studentName, onStart, initialExamId = '', registeredExamI
 function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'numerical_ability' }) {
   const [topic,      setTopic]     = useState(null)
   const [topicSec,   setTopicSec]  = useState(null)
-  const [difficulty, setDifficulty]= useState('easy')
+  const [difficulty, setDifficulty]= useState('diagnostic')
   const [count,      setCount]     = useState(10)
   const [loading,    setLoading]   = useState(false)
   const [error,      setError]     = useState('')
 
   const currentSection = TOPICS.find(s => s.section === sectionId) || TOPICS[0]
+  const isDiagnostic   = difficulty === 'diagnostic'
 
   const pickTopic = (t, secId) => { setTopic(t); setTopicSec(secId); setError('') }
 
   const start = async () => {
     if (!topic) return
     setError(''); setLoading(true)
-    try { const d = await generateMiniTest(topicSec, topic.id, count, difficulty, user?.id || studentName); onStart(d) }
+    try {
+      const d = isDiagnostic
+        ? await generateTopicTest(topicSec, topic.id, count, user?.id || null)
+        : await generateMiniTest(topicSec, topic.id, count, difficulty, user?.id || studentName)
+      onStart(d)
+    }
     catch(e) { setError(e.friendlyMessage||'Server error. Please try again.'); setLoading(false) }
   }
 
-  const diffStyle = { easy:'bg-emerald-100 text-emerald-800 border-emerald-300', medium:'bg-amber-100 text-amber-800 border-amber-300', hard:'bg-red-100 text-red-800 border-red-300', mixed:'bg-orange-100 text-orange-800 border-orange-300' }
+  const diffStyle = { easy:'bg-emerald-100 text-emerald-800 border-emerald-300', medium:'bg-amber-100 text-amber-800 border-amber-300', hard:'bg-red-100 text-red-800 border-red-300', mixed:'bg-orange-100 text-orange-800 border-orange-300', diagnostic:'bg-orange-100 text-orange-800 border-orange-300' }
 
   return (
     <div className="flex gap-4 items-start">
@@ -327,6 +333,28 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
             <div className="text-base font-black" style={{color: topic ? '#FF653F' : '#9ca3af'}}>{topic ? topic.label : 'Pick a topic →'}</div>
           </div>
 
+          {/* ── Mode: Diagnostic vs Practice ── */}
+          <div>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Mode</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={()=>setDifficulty('diagnostic')}
+                className={`py-1.5 text-xs font-semibold rounded-xl border-2 transition-all ${isDiagnostic ? diffStyle.diagnostic+' border-current' : 'border-gray-200 text-gray-500 bg-white hover:border-gray-300'}`}>
+                🎯 Diagnostic
+              </button>
+              <button onClick={()=>setDifficulty(prev => prev==='diagnostic' ? 'easy' : prev)}
+                className={`py-1.5 text-xs font-semibold rounded-xl border-2 transition-all ${!isDiagnostic ? 'bg-blue-50 text-blue-700 border-blue-300 border-current' : 'border-gray-200 text-gray-500 bg-white hover:border-gray-300'}`}>
+                📚 Practice
+              </button>
+            </div>
+            {isDiagnostic && (
+              <p className="text-[11px] text-orange-600 mt-1.5 leading-tight">
+                Auto-mix of Easy + Medium + Hard — shows your level instantly after the test
+              </p>
+            )}
+          </div>
+
+          {/* ── Difficulty (only when Practice mode) ── */}
+          {!isDiagnostic && (
           <div>
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Difficulty</p>
             <div className="grid grid-cols-2 gap-2">
@@ -339,6 +367,7 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
               ))}
             </div>
           </div>
+          )}
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -368,7 +397,9 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
               ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Generating…</span>
               : !topic
                 ? 'Select a topic to start'
-                : `Start · ${count}Q · ~${Math.max(5,count)} min · ${difficulty}`}
+                : isDiagnostic
+                  ? `🎯 Start Diagnostic · ${count}Q · ~${Math.max(5,count)} min`
+                  : `Start · ${count}Q · ~${Math.max(5,count)} min · ${difficulty}`}
           </button>
         </div>
       </div>

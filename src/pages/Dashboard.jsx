@@ -1423,7 +1423,12 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                   <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                     {history.slice(0,3).map((r, i, arr) => {
                       const pct  = Number(r.percentage || 0)
-                      const name = (r.exam||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) || 'Mock Test'
+                      const name = (() => {
+                        const toTitle = s => (s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+                        if (r.test_type === 'topic_diagnostic') return `Topicwise Test${r.topic ? ` — ${toTitle(r.topic)}` : ''}`
+                        if (r.test_type === 'mini' || r.test_type === 'concept_mini') return `Practice Test${r.topic ? ` — ${toTitle(r.topic)}` : r.section ? ` — ${toTitle(r.section)}` : ''}`
+                        return `Mock Test — ${toTitle(r.exam) || 'Bank Clerk Prelims'}`
+                      })()
                       const date = new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})
                       const pass = pct >= 40
                       return (
@@ -1960,8 +1965,8 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                   <div className="bg-white border border-gray-200 rounded-2xl p-10 text-center">
                     <div className="text-4xl mb-3">📈</div>
                     <div className="text-sm font-bold text-gray-900 mb-1">No data yet</div>
-                    <div className="text-xs text-gray-500 mb-4">Take a few mock tests to unlock your progress graphs.</div>
-                    <button onClick={()=>onStartTest('mock')} className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-bold px-6 py-2.5 rounded-xl">
+                    <div className="text-xs text-gray-500 mb-4">Take a topicwise test or mock test to unlock your progress graphs.</div>
+                    <button onClick={()=>onStartTest()} className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-bold px-6 py-2.5 rounded-xl">
                       Take a test →
                     </button>
                   </div>
@@ -2020,7 +2025,12 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                   <div className="space-y-3">
                     {history.map((r,i)=>{
                       const pct  = Number(r.percentage||0)
-                      const name = (r.exam||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())||'Mock Test'
+                      const name = (() => {
+                        const toTitle = s => (s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+                        if (r.test_type === 'topic_diagnostic') return `Topicwise Test${r.topic ? ` — ${toTitle(r.topic)}` : ''}`
+                        if (r.test_type === 'mini' || r.test_type === 'concept_mini') return `Practice Test${r.topic ? ` — ${toTitle(r.topic)}` : r.section ? ` — ${toTitle(r.section)}` : ''}`
+                        return `Mock Test — ${toTitle(r.exam) || 'Bank Clerk Prelims'}`
+                      })()
                       const date = new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})
                       const pass = pct >= 40
                       return (
