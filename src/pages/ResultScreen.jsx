@@ -207,20 +207,85 @@ function ShortcutBody({ q }) {
   )
 }
 
-/* ── Explanation card with Explanation / Alternate Method tabs ── */
+/* ── Key Formulas body ── */
+/* Render a numbered list of formula rows */
+function FormulaList({ rows, startIndex = 1 }) {
+  return (
+    <ol className="space-y-1.5">
+      {rows.map((row, i) => (
+        <li key={i} className="flex items-baseline gap-2 text-[13px]">
+          <span className="shrink-0 w-5 text-right text-[11px] font-semibold text-gray-400">
+            {startIndex + i}.
+          </span>
+          <span className="text-gray-500 shrink-0 min-w-[120px] leading-snug">{row.label}</span>
+          <span className="font-mono font-semibold leading-snug" style={{ color: '#FF653F' }}>
+            {row.expr}
+          </span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+function FormulasBody({ q }) {
+  const e = q?.explanation
+  const kf = e?.key_formulas
+  if (!kf) return (
+    <p className="text-[13px] text-gray-400 italic">No formulas available for this question type.</p>
+  )
+
+  // count total rows for continuous numbering across sections
+  let counter = 1
+  return (
+    <div>
+      {kf.title && (
+        <p className="font-bold text-[13px] mb-3" style={{ color: '#CC3D00' }}>{kf.title}</p>
+      )}
+      {Array.isArray(kf.sections)
+        ? kf.sections.map((sec, si) => {
+            const start = counter
+            counter += sec.rows.length
+            return (
+              <div key={si} className="mb-4">
+                {sec.heading && (
+                  <p className="text-[10px] font-bold tracking-widest uppercase mb-2"
+                    style={{ color: '#FF653F' }}>{sec.heading}</p>
+                )}
+                <FormulaList rows={sec.rows} startIndex={start} />
+              </div>
+            )
+          })
+        : Array.isArray(kf.rows) && <FormulaList rows={kf.rows} startIndex={1} />
+      }
+      {kf.note && (
+        <div className="mt-3 rounded-xl p-3 text-xs text-amber-900 leading-relaxed"
+          style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+          <span className="font-bold">Note: </span>{kf.note}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Explanation card with Explanation / Alternate Method / Key Formulas tabs ── */
 function ExplanationWithTabs({ q }) {
   const [tab, setTab] = useState('explanation')
   const e = q?.explanation
-  const hasShortcut = e && typeof e === 'object' && e.shortcut
+  const hasShortcut  = e && typeof e === 'object' && e.shortcut
+  const hasFormulas  = e && typeof e === 'object' && e.key_formulas
+
+  const tabs = [
+    { id: 'explanation', label: 'Explanation' },
+    ...(hasShortcut ? [{ id: 'alternate', label: 'Alternate Method' }] : []),
+    ...(hasFormulas ? [{ id: 'formulas',  label: 'Key Formulas' }]    : []),
+  ]
+  const showTabs = tabs.length > 1
 
   return (
     <div>
-      {hasShortcut && (
+      {showTabs && (
         <div className="flex gap-0 mb-4 border-b border-gray-200">
-          {[
-            { id: 'explanation', label: 'Explanation' },
-            { id: 'alternate',   label: 'Alternate Method' },
-          ].map(t => (
+          {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
@@ -235,10 +300,9 @@ function ExplanationWithTabs({ q }) {
           ))}
         </div>
       )}
-      {tab === 'explanation'
-        ? <ExplanationBody q={q} />
-        : <ShortcutBody   q={q} />
-      }
+      {tab === 'explanation' && <ExplanationBody q={q} />}
+      {tab === 'alternate'   && <ShortcutBody   q={q} />}
+      {tab === 'formulas'    && <FormulasBody   q={q} />}
     </div>
   )
 }
@@ -384,13 +448,13 @@ function ExplanationBody({ q }) {
   )
 }
 
-const TABS = [
-  {id:'feedback',     icon:'💬', label:'Feedback'      },
-  {id:'weak',         icon:'⚠',  label:'Weak Areas'    },
-  {id:'time',         icon:'⏱',  label:'Time Analysis' },
-  {id:'steps',        icon:'🚀', label:'Next Steps'    },
-  {id:'topics',       icon:'📋', label:'All Topics'    },
-  {id:'explanations', icon:'💡', label:'Explanations'  },
+const ALL_TABS = [
+  {id:'feedback',     icon:'💬', label:'Feedback',       fullOnly: false},
+  {id:'weak',         icon:'⚠',  label:'Weak Areas',     fullOnly: true },
+  {id:'time',         icon:'⏱',  label:'Time Analysis',  fullOnly: true },
+  {id:'steps',        icon:'🚀', label:'Next Steps',     fullOnly: true },
+  {id:'topics',       icon:'📋', label:'All Topics',     fullOnly: false},
+  {id:'explanations', icon:'💡', label:'Explanations',   fullOnly: false},
 ]
 
 const TAB_COLORS = [
@@ -410,6 +474,64 @@ function Card({title, icon, badge, children}) {
         </div>
       )}
       <div className="p-5">{children}</div>
+    </div>
+  )
+}
+
+function TopicBreakdown({ questionResults }) {
+  const toLabel = s => s.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase())
+  const isGeneric = s => !s || s.toLowerCase().startsWith('pattern_')
+
+  // Group questions by sub_type (descriptive) or fall back to difficulty level
+  const groups = {}
+  for (const qr of questionResults) {
+    const sub = qr.metadata?.sub_type
+    const key = isGeneric(sub) ? `${(qr.difficulty||'medium')} level` : sub
+    if (!groups[key]) groups[key] = { correct: 0, total: 0 }
+    groups[key].total++
+    if (qr.status === 'correct') groups[key].correct++
+  }
+
+  const strong = [], weak = []
+  for (const [key, g] of Object.entries(groups)) {
+    const pct = g.total ? g.correct / g.total : 0
+    const item = { label: toLabel(key), correct: g.correct, total: g.total, pct }
+    if (pct >= 0.6) strong.push(item)
+    else weak.push(item)
+  }
+
+  if (strong.length === 0 && weak.length === 0)
+    return <p className="text-xs text-gray-400 text-center py-4">No sub-topic data available.</p>
+
+  const Row = ({item, isStrong}) => (
+    <div className="flex items-center gap-2 py-1.5 border-b border-gray-50 last:border-0">
+      <span className="text-xs" style={{color: isStrong ? '#16a34a' : '#dc2626'}}>{isStrong ? '✓' : '✗'}</span>
+      <span className="text-xs text-gray-700 flex-1 leading-snug">{item.label}</span>
+      <span className="text-[11px] font-semibold shrink-0"
+        style={{color: isStrong ? '#16a34a' : '#dc2626'}}>
+        {item.correct}/{item.total}
+      </span>
+    </div>
+  )
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <div className="text-[11px] font-bold uppercase tracking-wide text-green-700 mb-1.5">
+          Strong ✓
+        </div>
+        {strong.length > 0
+          ? strong.map((it,i) => <Row key={i} item={it} isStrong />)
+          : <p className="text-xs text-gray-400 italic">None yet — keep practising!</p>}
+      </div>
+      <div>
+        <div className="text-[11px] font-bold uppercase tracking-wide text-red-600 mb-1.5">
+          Needs Work ✗
+        </div>
+        {weak.length > 0
+          ? weak.map((it,i) => <Row key={i} item={it} isStrong={false} />)
+          : <p className="text-xs text-gray-400 italic">All sub-topics looking good!</p>}
+      </div>
     </div>
   )
 }
@@ -527,6 +649,22 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
   const peer       = result.peer_comparison        || null
   const topicR     = result.topic_results          || {}
   const name       = studentName || 'Student'
+  const isFullMock = (result.test_type ?? 'full') === 'full'
+
+  // Rank data from peer comparison (full mock only)
+  const peerPct    = peer?.peer_percentile || null
+  const rankNum    = peerPct?.rank         || null
+  const rankTotal  = peerPct?.total_candidates || null
+
+  // Difficulty progression data (mini tests only)
+  const curDiff     = result.current_difficulty  || null
+  const nextDiff    = result.next_difficulty     || null
+  const levelUp     = result.level_up            || false
+  const levelMsg    = result.level_message       || null
+  const DIFF_BADGE  = { easy: {label:'Easy', bg:'#e8f5e9', color:'#2e7d32'}, medium: {label:'Medium', bg:'#fff8e1', color:'#f57f17'}, hard: {label:'Hard', bg:'#fce4ec', color:'#c62828'} }
+
+  // Only show analysis tabs for full mock tests
+  const TABS = ALL_TABS.filter(t => !t.fullOnly || isFullMock)
 
   return (
     <div className="min-h-screen bg-[#ffffff]" style={{fontFamily:"'Inter',system-ui,sans-serif"}}>
@@ -624,6 +762,33 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
         {/* ── RIGHT COLUMN: hero + scrolling content ── */}
         <div className="flex-1 min-w-0 flex flex-col overflow-y-auto nice-scroll">
 
+          {/* ── LEVEL-UP / LEVEL FEEDBACK BANNER — mini tests only ── */}
+          {!isFullMock && tab === 'feedback' && levelMsg && (
+            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
+              style={{background: levelUp ? '#f0fdf4' : '#fff8e1', border: levelUp ? '1px solid #86efac' : '1px solid #fcd34d'}}>
+              <span className="text-lg mt-0.5">{levelUp ? '🎉' : '💪'}</span>
+              <div>
+                <p className="font-bold text-gray-800 mb-0.5">{levelUp ? 'Level Up!' : 'Keep Going!'}</p>
+                <p className="text-gray-600 text-xs leading-relaxed">{levelMsg}</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── MINI TEST NOTICE — shown instead of full analysis for practice tests ── */}
+          {!isFullMock && tab === 'feedback' && (
+            <div className="mx-4 mt-4 mb-0 rounded-xl px-4 py-3 flex items-start gap-3 text-sm"
+              style={{background:'#FFF8F0', border:'1px solid #fec9b0'}}>
+              <span className="text-lg mt-0.5">📝</span>
+              <div>
+                <p className="font-bold text-gray-800 mb-0.5">Practice Test Result</p>
+                <p className="text-gray-500 text-xs leading-relaxed">
+                  Detailed analysis (Weak Areas, Time Analysis, Next Steps) is available only after a <strong>Full Mock Test</strong>.
+                  Take a full mock from the Dashboard to get your complete performance report and rank.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* ── SCORE HERO — only on the Feedback tab ── */}
           {tab==='feedback' && (
           <div className="bg-white border-b border-gray-100 p-4">
@@ -655,11 +820,33 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                     <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">✗ {wrong} wrong</span>
                     <span className="text-xs font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-full">— {skipped} skipped</span>
                   </div>
+                  {/* Rank badge — only for full mock tests with enough platform data */}
+                  {isFullMock && rankNum && rankTotal && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-xs font-bold"
+                      style={{background:'linear-gradient(135deg,#FF653F,#cc3d00)'}}>
+                      <span>🏆</span>
+                      <span>Rank #{rankNum} of {rankTotal} students</span>
+                    </div>
+                  )}
+                  {/* Difficulty level badge — mini tests only */}
+                  {!isFullMock && curDiff && DIFF_BADGE[curDiff] && (
+                    <div className="mt-2 flex items-center gap-2 flex-wrap">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                        style={{background: DIFF_BADGE[curDiff].bg, color: DIFF_BADGE[curDiff].color}}>
+                        Level: {DIFF_BADGE[curDiff].label}
+                      </span>
+                      {nextDiff && nextDiff !== curDiff && DIFF_BADGE[nextDiff] && (
+                        <span className="text-xs text-gray-400">
+                          → Next: <span style={{color: DIFF_BADGE[nextDiff].color}}>{DIFF_BADGE[nextDiff].label}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Expert Feedback — CENTER */}
-              {result.ai_feedback ? (
+              {/* Expert Feedback — CENTER (full mock only) */}
+              {isFullMock && result.ai_feedback ? (
                 <div className="rounded-xl px-4 py-3.5 min-w-0" style={{background:'#FFF3EE', border:'1px solid #fec9b0'}}>
                   <div className="flex items-center gap-2 mb-2 pb-2" style={{borderBottom:'1px solid #fec9b0'}}>
                     <span className="text-xs">🤖</span>
@@ -679,7 +866,8 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                 </div>
               ) : <div className="hidden lg:block" />}
 
-              {/* Readiness ring — RIGHT */}
+              {/* Readiness ring — RIGHT (full mock only) */}
+              {!isFullMock ? null :
               <div className="flex flex-row lg:flex-col items-center justify-center gap-2 flex-shrink-0 rounded-xl border border-gray-200 px-4 py-3">
                 <div className="relative w-20 h-20">
                   <svg viewBox="0 0 36 36" className="w-20 h-20 -rotate-90">
@@ -706,7 +894,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                     </div>
                   )}
                 </div>
-              </div>
+              </div>}
 
             </div>
           </div>
@@ -737,8 +925,13 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                   </div>
                 </Card>
 
-                {/* Col 2: Cut-off comparison */}
-                {peer ? (
+                {/* Col 2: Topic Breakdown (mini) OR Cut-off comparison (full mock) */}
+                {!isFullMock && (
+                  <Card title="Topic Breakdown" icon="📊">
+                    <TopicBreakdown questionResults={result.question_results || []} />
+                  </Card>
+                )}
+                {isFullMock && peer && (
                   <Card title="Cut-off comparison" icon="🎯"
                     badge={
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
@@ -803,12 +996,13 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                       )
                     })()}
                   </Card>
-                ) : (
+                )}
+                {isFullMock && !peer && (
                   <Card title="Cut-off comparison" icon="🎯">
                     <p className="text-xs text-gray-400 text-center py-6">Category data loading...</p>
                   </Card>
                 )}
-              </div>
+              </div>{/* end grid */}
 
             </div>
           )}

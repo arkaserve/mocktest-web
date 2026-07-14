@@ -123,6 +123,7 @@ const TOPICS = [
       { id:'pipes_cisterns',         label:'Pipes & Cisterns',      sub:'fill · drain · together' },
       { id:'probability',            label:'Probability',           sub:'P(E) · cards · dice' },
       { id:'permutation_combination',label:'Permutation & Combination', sub:'nPr · nCr · arrangements' },
+      { id:'trigonometry',            label:'Trigonometry',             sub:'standard angles · height & distance' },
     ]
   },
   { section:'reasoning', label:'Reasoning Ability', accent:'#8B5CF6',
@@ -137,8 +138,10 @@ const TOPICS = [
       { id:'coding_decoding',              label:'Coding-Decoding',     sub:'letter / number codes' },
       { id:'alphanumeric_series',          label:'Alphanumeric Series', sub:'mixed series · next term' },
       { id:'order_ranking',                label:'Order & Ranking',     sub:'position from top/bottom' },
-	  { id:'computer_awareness',           label:'Computer Awareness',  sub:'hardware · software · MS Office · internet' },
-	  { id:'data_sufficiency_reasoning',   label:'Data Sufficiency',    sub:'arrangement · relationships · direction' },
+      { id:'computer_awareness',           label:'Computer Awareness',  sub:'hardware · software · MS Office · internet' },
+      { id:'data_sufficiency_reasoning',   label:'Data Sufficiency',    sub:'arrangement · relationships · direction' },
+      { id:'venn_diagram',                 label:'Venn Diagram',        sub:'two-set · three-set · intersection' },
+      { id:'missing_number',               label:'Missing Number',      sub:'grid patterns · triangle · matrix' },
     ]
   },
   { section:'english', label:'English Language', accent:'#10B981',
@@ -263,61 +266,60 @@ function FullMockTab({ studentName, onStart, initialExamId = '', registeredExamI
 }
 
 // ── Tab: Topic Practice ───────────────────────────────────────
-function TopicPracticeTab({ studentName, onStart, user = null }) {
-  const [openSection, setOpenSection] = useState('numerical_ability')
-  const [topic,       setTopic]       = useState(null)   // no default — student picks
-  const [topicSec,    setTopicSec]    = useState(null)
-  const [difficulty,  setDifficulty]  = useState('adaptive')
-  const [count,       setCount]       = useState(10)
-  const [loading,     setLoading]     = useState(false)
-  const [error,       setError]       = useState('')
+function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'numerical_ability' }) {
+  const [topic,      setTopic]     = useState(null)
+  const [topicSec,   setTopicSec]  = useState(null)
+  const [difficulty, setDifficulty]= useState('easy')
+  const [count,      setCount]     = useState(10)
+  const [loading,    setLoading]   = useState(false)
+  const [error,      setError]     = useState('')
+
+  const currentSection = TOPICS.find(s => s.section === sectionId) || TOPICS[0]
+
+  const pickTopic = (t, secId) => { setTopic(t); setTopicSec(secId); setError('') }
 
   const start = async () => {
     if (!topic) return
     setError(''); setLoading(true)
-    // Use adaptive if user is logged in, otherwise fall back to chosen difficulty
-    const effectiveDiff = (difficulty === 'adaptive' && user?.id) ? 'adaptive' : difficulty
-    try { const d = await generateMiniTest(topicSec, topic.id, count, effectiveDiff, user?.id || studentName); onStart(d) }
+    try { const d = await generateMiniTest(topicSec, topic.id, count, difficulty, user?.id || studentName); onStart(d) }
     catch(e) { setError(e.friendlyMessage||'Server error. Please try again.'); setLoading(false) }
   }
 
-  const diffStyle = { easy:'bg-emerald-100 text-emerald-800 border-emerald-300', medium:'bg-amber-100 text-amber-800 border-amber-300', hard:'bg-red-100 text-red-800 border-red-300', mixed:'bg-orange-100 text-orange-800 border-orange-300', adaptive:'bg-violet-100 text-violet-800 border-violet-300' }
+  const diffStyle = { easy:'bg-emerald-100 text-emerald-800 border-emerald-300', medium:'bg-amber-100 text-amber-800 border-amber-300', hard:'bg-red-100 text-red-800 border-red-300', mixed:'bg-orange-100 text-orange-800 border-orange-300' }
 
   return (
-    <div className="flex flex-col xl:flex-row gap-4 items-start">
+    <div className="flex gap-4 items-start">
 
-      {/* ── LEFT: topic sections (max 5 per row) ── */}
-      <div className="flex-1 min-w-0 space-y-4 w-full">
-        {TOPICS.map(sec => (
-          <div key={sec.section} className="border border-gray-200 rounded-2xl overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100" style={{background:`${sec.accent}10`}}>
-              <span className="w-3 h-3 rounded-full" style={{background:sec.accent}}/>
-              <span className="font-bold text-gray-800 text-sm">{sec.label}</span>
-              <span className="text-xs text-gray-400 ml-auto">{sec.topics.length} topics</span>
-            </div>
-            <div className="p-2.5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5">
-              {sec.topics.map(t => {
-                const isSel = topic?.id===t.id
-                return (
-                  <button key={t.id} onClick={()=>{setTopic(t);setTopicSec(sec.section);setError('')}}
-                    className={`text-left px-3 py-2 rounded-xl border transition-all hover:shadow-sm ${isSel?'border-2':''}`}
-                    style={isSel
-                      ? { background:'#FFF3EE', borderColor:'#FF653F' }
-                      : { background:`${sec.accent}0D`, borderColor:`${sec.accent}33`, borderLeftColor:sec.accent, borderLeftWidth:4 }}>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-bold" style={{ color:isSel?'#111':sec.accent }}>{t.label}</span>
-                      {isSel && <span className="text-[10px] text-white px-1.5 py-0.5 rounded-full flex-shrink-0" style={{background:'#FF653F'}}>✓</span>}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-0.5 truncate">{t.sub}</div>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        ))}
+      {/* ── TOPIC CARDS for selected section ── */}
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
+          {currentSection.label} — {currentSection.topics.length} Topics
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
+          {currentSection.topics.map(t => {
+            const isSel = topic?.id === t.id
+            return (
+              <button key={t.id}
+                onClick={() => pickTopic(t, currentSection.section)}
+                className={`text-left px-3 py-2 rounded-xl border transition-all hover:shadow-sm ${isSel ? 'border-2' : ''}`}
+                style={isSel
+                  ? { background:'#FFF3EE', borderColor:'#FF653F' }
+                  : { background:`${currentSection.accent}0D`, borderColor:`${currentSection.accent}33`, borderLeftColor: currentSection.accent, borderLeftWidth: 4 }}>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-sm font-bold leading-tight"
+                    style={{ color: isSel ? '#111' : currentSection.accent }}>
+                    {t.label}
+                  </span>
+                  {isSel && <span className="text-[10px] text-white px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background:'#FF653F' }}>✓</span>}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5 truncate">{t.sub}</div>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
-      {/* ── RIGHT: vertical config panel (sticky, top-to-bottom) ── */}
+      {/* ── RIGHT: config panel ── */}
       <div className="w-full xl:w-72 flex-shrink-0">
         <div className="bg-gray-50 rounded-2xl border border-gray-200 p-4 space-y-4 xl:sticky xl:top-4">
           <div>
@@ -328,24 +330,21 @@ function TopicPracticeTab({ studentName, onStart, user = null }) {
           <div>
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Difficulty</p>
             <div className="grid grid-cols-2 gap-2">
-              {['easy','medium','hard','adaptive'].map(d=>(
+              {['easy','medium','hard','mixed'].map(d=>(
                 <button key={d} onClick={()=>setDifficulty(d)}
                   className={`py-1.5 text-xs font-semibold rounded-xl border-2 capitalize transition-all
-                    ${difficulty===d ? diffStyle[d]+' border-current' : 'border-gray-200 text-gray-500 bg-white hover:border-gray-300'}
-                    ${d==='adaptive' ? 'col-span-2' : ''}`}>
-                  {d==='adaptive' ? '⚡ Auto' : d}
+                    ${difficulty===d ? diffStyle[d]+' border-current' : 'border-gray-200 text-gray-500 bg-white hover:border-gray-300'}`}>
+                  {d === 'mixed' ? '⚡ Mixed' : d}
                 </button>
               ))}
             </div>
-            {difficulty==='adaptive' && (
-              <p className="text-xs mt-1.5 rounded-lg px-2 py-1" style={{color:'#FF653F',background:'#FFF3EE'}}>
-                ✦ Adjusts to your level — easy where you're weak, hard where you're strong
-              </p>
-            )}
           </div>
 
           <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Number of questions</p>
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Number of questions</p>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background:'#FFF3EE', color:'#FF653F'}}>~{Math.max(5,count)} min</span>
+            </div>
             <div className="grid grid-cols-3 gap-2">
               {[5,10,15,20,30,50].map(n=>(
                 <button key={n} onClick={()=>setCount(n)}
@@ -369,7 +368,7 @@ function TopicPracticeTab({ studentName, onStart, user = null }) {
               ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Generating…</span>
               : !topic
                 ? 'Select a topic to start'
-                : `Start · ${count}Q · ${difficulty === 'adaptive' ? 'Auto' : difficulty}`}
+                : `Start · ${count}Q · ~${Math.max(5,count)} min · ${difficulty}`}
           </button>
         </div>
       </div>
@@ -455,7 +454,8 @@ function SectionTestTab({ studentName, onStart, user = null }) {
 
 // ── Main HomeScreen ───────────────────────────────────────────
 export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogout, startMode = 'mock', startExamId = '', user = null }) {
-  const [tab, setTab] = useState(startMode)
+  const [tab,        setTab]        = useState(startMode)
+  const [topicSecId, setTopicSecId] = useState('numerical_ability')
 
   // Registration + subscription → which exams the user may launch
   const _meta = user?.user_metadata || {}
@@ -531,6 +531,28 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
                 <span className="flex-shrink-0"><item.Icon /></span>{item.label}
               </button>
             ))}
+            {tab === 'topic' && (
+              <div className="mt-3 border-t border-gray-100 pt-3">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">Subject</p>
+                {TOPICS.map(sec => {
+                  const active = topicSecId === sec.section
+                  return (
+                    <button key={sec.section}
+                      onClick={() => setTopicSecId(sec.section)}
+                      className="w-full text-left px-3 py-2.5 rounded-xl mb-0.5 transition-all"
+                      style={active
+                        ? { background:`${sec.accent}15`, color: sec.accent }
+                        : { color:'#4b5563' }}>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: sec.accent }}/>
+                        <span className="text-xs font-semibold leading-tight">{sec.label}</span>
+                      </div>
+                      <div className="text-[10px] text-gray-400 mt-0.5 ml-4">{sec.topics.length} topics</div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </nav>
           <div className="px-4 py-4 border-t border-gray-100">
             <div className="flex items-center gap-3 mb-3">
@@ -555,7 +577,7 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
 
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm mb-6">
               {tab==='mock'    && <FullMockTab    studentName={studentName} onStart={onStart} initialExamId={startExamId} registeredExamIds={registeredExamIds} isPro={isPro} />}
-              {tab==='topic'   && <TopicPracticeTab studentName={studentName} onStart={onStart} user={user} />}
+              {tab==='topic'   && <TopicPracticeTab key={topicSecId} studentName={studentName} onStart={onStart} user={user} sectionId={topicSecId} />}
               {tab==='section' && <SectionTestTab studentName={studentName} onStart={onStart} user={user} />}
             </div>
 
