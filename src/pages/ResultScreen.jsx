@@ -649,7 +649,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
   const timeA      = result.time_analysis          || {}
   const peer       = result.peer_comparison        || null
   const topicR     = result.topic_results          || {}
-  const name       = studentName || 'Student'
+  const name       = (studentName || 'Student').replace(/\b\w/g, c => c.toUpperCase())
   const isFullMock    = (result.test_type ?? 'full') === 'full'
   const isDiagnostic  = result.test_type === 'topic_diagnostic'
 
@@ -897,25 +897,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
             ]
             return (
               <div className="mx-4 mt-4 space-y-3">
-                {/* Level badge */}
-                <div className="rounded-2xl border p-4" style={{background:'#FFF3EE', borderColor:'#fec9b0'}}>
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div>
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{topicLabel} — Topic Level</div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl font-black px-4 py-1 rounded-xl text-white" style={{background: td.level_color||'#FF653F'}}>
-                          {td.level}
-                        </span>
-                        <p className="text-sm text-gray-600 leading-snug max-w-xs">{td.level_desc}</p>
-                      </div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-xs text-gray-400 mb-0.5">Predicted mock contribution</div>
-                      <div className="text-lg font-black" style={{color:'#FF653F'}}>{td.mock_score_current} / {td.mock_score_potential}</div>
-                      <div className="text-xs text-gray-400">marks in real exam</div>
-                    </div>
-                  </div>
-                </div>
+                {/* Level badge removed — level label not needed */}
                 {/* Difficulty accuracy bars */}
                 <div className="grid grid-cols-3 gap-2">
                   {bands.map(b => (
@@ -1057,11 +1039,7 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                 )}
 
                 {/* Col 2: Topic Breakdown (mini/diagnostic) OR Cut-off comparison (full mock) */}
-                {isDiagnostic && (
-                  <Card title="Sub-type Breakdown" icon="📊">
-                    <TopicBreakdown questionResults={result.question_results || []} />
-                  </Card>
-                )}
+
                 {!isFullMock && !isDiagnostic && (
                   <Card title="Topic Breakdown" icon="📊">
                     <TopicBreakdown questionResults={result.question_results || []} />

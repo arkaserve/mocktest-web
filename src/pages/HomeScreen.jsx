@@ -603,7 +603,7 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
           <div className="w-full">
 
             <div className="mb-6">
-              <div className="text-gray-500 text-sm">Welcome, <span className="font-semibold text-gray-900">{studentName}</span></div>
+              <div className="text-gray-500 text-sm">Welcome, <span className="font-semibold text-gray-900">{(studentName||'').replace(/\b\w/g,c=>c.toUpperCase())}</span></div>
               <h1 className="text-2xl font-black text-gray-900 mt-1">What would you like to practice?</h1>
             </div>
 

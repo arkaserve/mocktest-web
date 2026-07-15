@@ -197,6 +197,15 @@ export default function ExamScreen({ testData, studentName, onResult, onExit }) 
   // Only active for full mock tests with multiple sections
   const isMini = testData?.is_mini || testData?.test_type === "mini"
   const sectionTimingOn = secTimerActive && !isMini && Object.keys(testData.sections || {}).length > 1
+  const testTypeLabel = (() => {
+    const t = testData?.test_type || 'full'
+    if (t === 'topic_diagnostic' || t === 'concept_mini') return 'Topic Practice'
+    if (t === 'mini') {
+      const secs = Object.keys(testData.sections || {})
+      return secs.length === 1 ? 'Section Test' : 'Topic Practice'
+    }
+    return 'Full Mock Test'
+  })()
 
   // 1) Pure decrement — only ticks down the ACTIVE section's clock. No side effects.
   useEffect(() => {
@@ -428,26 +437,24 @@ export default function ExamScreen({ testData, studentName, onResult, onExit }) 
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="font-bold text-lg" style={{color:'#FF653F'}}>MockTest</span>
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-sm sm:text-base" style={{color:'#FF653F'}}>{testTypeLabel}</span>
           {violations > 0 && (
             <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
-              ⚠ {violations} violation{violations > 1 ? 's' : ''}
+              ⚠ {violations}
             </span>
           )}
-          <span className="text-sm text-gray-500">
-            {(testData?.exam || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase()) || 'Mock Test'}
-          </span>
         </div>
-        <div className={`flex items-center gap-2 px-2 py-1 rounded-lg font-mono text-sm sm:text-lg font-bold
+        <div className={`flex flex-col items-center px-2 py-1 rounded-lg font-mono font-bold
           ${isLow ? 'bg-red-50 text-red-600 border border-red-200' : 'border'}`}
           style={!isLow ? {background:'#FFF3EE',color:'#FF653F',borderColor:'#fec9b0'} : {}}>
-          {formatTime(secsLeft)}
-              {secTimers[activeSection] !== undefined && (
-                <div className={`text-xs mt-0.5 ${secTimers[activeSection] < 120 ? 'text-red-400' : ''}`} style={secTimers[activeSection] >= 120 ? {color:'#FF653F'} : {}}>
-                  {getSectionLabel(activeSection)}: {formatTime(secTimers[activeSection])}
-                </div>
-              )}
+          <span className="text-sm sm:text-lg leading-tight">{formatTime(secsLeft)}</span>
+          {secTimers[activeSection] !== undefined && (
+            <span className={`text-[10px] leading-tight ${secTimers[activeSection] < 120 ? 'text-red-400' : ''}`}
+              style={secTimers[activeSection] >= 120 ? {color:'#FF653F'} : {}}>
+              {getSectionLabel(activeSection)}: {formatTime(secTimers[activeSection])}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline text-sm text-gray-600">Hi, <b>{studentName}</b></span>
