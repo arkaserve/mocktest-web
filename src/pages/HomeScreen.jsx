@@ -607,6 +607,25 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
               <h1 className="text-2xl font-black text-gray-900 mt-1">What would you like to practice?</h1>
             </div>
 
+            {/* Mobile-only subject tabs — visible only when sidebar is hidden */}
+            {tab === 'topic' && (
+              <div className="flex md:hidden gap-2 mb-3 overflow-x-auto pb-1" style={{scrollbarWidth:'none'}}>
+                {TOPICS.map(sec => {
+                  const active = topicSecId === sec.section
+                  return (
+                    <button key={sec.section} onClick={() => setTopicSecId(sec.section)}
+                      className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-all whitespace-nowrap"
+                      style={active
+                        ? { background: sec.accent, borderColor: sec.accent, color:'#fff' }
+                        : { background:'#fff', borderColor:`${sec.accent}44`, color: sec.accent }}>
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: active ? '#fff' : sec.accent }}/>
+                      {sec.label}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm mb-6">
               {tab==='mock'    && <FullMockTab    studentName={studentName} onStart={onStart} initialExamId={startExamId} registeredExamIds={registeredExamIds} isPro={isPro} />}
               {tab==='topic'   && <TopicPracticeTab key={topicSecId} studentName={studentName} onStart={onStart} user={user} sectionId={topicSecId} />}
