@@ -1013,7 +1013,7 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
             {activeTab === 'home' && <>
               {/* Welcome */}
               <div className="mb-5">
-                <h1 className="text-2xl font-black text-gray-900">Welcome, {userName}!</h1>
+                <h1 className="text-2xl font-black text-gray-900">Welcome, {(userName||'').replace(/\b\w/g,c=>c.toUpperCase())}!</h1>
                 <p className="text-gray-500 text-sm mt-0.5">Your expert-crafted exam prep dashboard</p>
               </div>
 

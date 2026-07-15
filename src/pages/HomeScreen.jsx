@@ -590,7 +590,7 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background:'#FF653F' }}>{initials}</div>
               <div className="min-w-0">
-                <div className="text-sm font-bold text-gray-900 truncate">{studentName}</div>
+                <div className="text-sm font-bold text-gray-900 truncate">{(studentName||'').replace(/\b\w/g,c=>c.toUpperCase())}</div>
                 <div className="text-xs text-gray-400 truncate">{user?.email}</div>
               </div>
             </div>

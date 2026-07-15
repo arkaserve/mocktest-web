@@ -457,7 +457,7 @@ export default function ExamScreen({ testData, studentName, onResult, onExit }) 
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline text-sm text-gray-600">Hi, <b>{studentName}</b></span>
+          <span className="hidden sm:inline text-sm text-gray-600">Hi, <b>{(studentName||'').replace(/\b\w/g,c=>c.toUpperCase())}</b></span>
           {!navigator.onLine && (
           <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-lg">Offline</span>
         )}
