@@ -492,7 +492,7 @@ export default function PredictionExplainer() {
 
         {/* ── HOW IT WORKS ── */}
         {activeSection === "howit" && (<>
-          <Card title="How the Prediction Engine Works" subtitle="Step by step — no magic, just math" accent="#6366f1">
+          <Card title="How Our Prediction Works" subtitle="Step by step — no magic, just math" accent="#6366f1">
             <div className="space-y-5">
               {[
                 {
@@ -555,7 +555,7 @@ export default function PredictionExplainer() {
             </div>
           </Card>
 
-          <Card title="What the Engine Cannot Do" subtitle="Honest limitations" accent="#ef4444">
+          <Card title="Our Honest Limitations" subtitle="What our predictions cannot guarantee" accent="#ef4444">
             <ul className="space-y-2 text-xs text-gray-600">
               {[
                 "Cannot predict exact cut-offs — those depend on vacancy count and competition that year.",

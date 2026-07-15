@@ -48,7 +48,7 @@ export default function ComingSoonPage({ user, category, onNav }) {
           {cat.label} Exams are almost here!
         </h1>
         <p style={{fontSize:14,color:'#475569',lineHeight:1.7,marginBottom:28,maxWidth:480,margin:'0 auto 28px'}}>
-          We're building smart engines for {cat.label} exams. Every question will be expert-crafted, unique and at exam level — just like our Banking platform.
+          We're building expert-crafted mock tests for {cat.label} exams. Every question will be unique and at exam level — just like our Banking platform.
         </p>
 
         {/* Exams list */}

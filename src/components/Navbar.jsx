@@ -7,11 +7,11 @@ export default function Navbar({ currentPage, onNav, user, onLogout }) {
     { id: 'about',   label: 'About Us'        },
     { id: 'home',    label: 'Home'            },
     { id: 'success', label: 'Success Stories' },
-    { id: 'career',  label: 'Career'          },
+    // { id: 'career',  label: 'Career'          }, // hidden — no open roles currently
     { id: 'blog',    label: 'Blog'            },
-    { id: 'exams',   label: 'Exam Patterns',  icon: '📝' },
-    { id: 'cutoffs', label: 'Cut-off Trends', icon: '📊' },
-    { id: 'papers',  label: 'Past Papers',    icon: '📄' },
+    { id: 'exams',   label: 'Exam Patterns'  },
+    { id: 'cutoffs', label: 'Cut-off Trends' },
+    { id: 'papers',  label: 'Past Papers'    },
   ]
 
   return (

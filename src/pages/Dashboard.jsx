@@ -117,7 +117,7 @@ const SvgGear   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="no
 
 const MODES = [
   { id:'mock',    label:'Full Mock Test',  desc:'100Q · all sections · -0.25 · PDF result',    Icon:SvgDoc,    bg:'bg-blue-600',    light:'bg-blue-50',    text:'text-blue-700',    border:'border-blue-200'    },
-  { id:'topic',   label:'Topic Practice',  desc:'35 topics · engine-generated · any difficulty', Icon:SvgTarget, bg:'bg-violet-600',  light:'bg-violet-50',  text:'text-violet-700',  border:'border-violet-200'  },
+  { id:'topic',   label:'Topic Practice',  desc:'35 topics · unique questions · any difficulty', Icon:SvgTarget, bg:'bg-violet-600',  light:'bg-violet-50',  text:'text-violet-700',  border:'border-violet-200'  },
   { id:'section', label:'Section Test',    desc:'Pick one section · 20 min timed · full score',  Icon:SvgTimer,  bg:'bg-emerald-600', light:'bg-emerald-50', text:'text-emerald-700', border:'border-emerald-200' },
 ]
 
@@ -1226,25 +1226,40 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                   const diff   = +(examBest - cutoff).toFixed(1)
                   const clears = diff >= 0
                   return (
-                    <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-5">
-                      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Cut-off check · {cat} category</span>
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${clears?'bg-green-100 text-green-700':'bg-orange-100 text-orange-700'}`}>
-                          {clears ? '✓ Above cut-off' : `${Math.abs(diff)} marks to go`}
-                        </span>
+                    <div className="mt-4 rounded-2xl overflow-hidden" style={{ background: clears ? 'linear-gradient(135deg,#ecfdf5,#f0fdf4)' : 'linear-gradient(135deg,#fff7ed,#fff3e6)', border: `1.5px solid ${clears?'#6ee7b7':'#fec9b0'}` }}>
+                      {/* Header */}
+                      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+                        <div>
+                          <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: clears?'#059669':'#d97706' }}>Cut-off Check · {cat} category</div>
+                          <div className="text-lg font-black mt-0.5" style={{ color: clears?'#065f46':'#92400e' }}>
+                            {clears ? `+${diff} marks safe` : `${Math.abs(diff)} marks to go`}
+                          </div>
+                        </div>
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: clears?'#d1fae5':'#ffedd5' }}>
+                          {clears ? '🎯' : '📈'}
+                        </div>
                       </div>
-                      <div className="relative h-7 bg-gray-100 rounded-lg overflow-hidden mb-2">
-                        <div className="absolute top-0 h-full border-l-2 border-dashed border-gray-500" style={{ left:`${Math.min(cutoff,99)}%` }}/>
-                        <div className="absolute top-0 h-full border-l-4" style={{ left:`${Math.min(examBest,99)}%`, borderColor:'#FF653F' }}/>
+                      {/* Progress track */}
+                      <div className="px-4 pb-1">
+                        <div className="relative h-5 rounded-full overflow-hidden" style={{ background: clears?'#d1fae5':'#ffe4cc' }}>
+                          {/* Fill up to user score */}
+                          <div className="absolute left-0 top-0 h-full rounded-full transition-all"
+                            style={{ width:`${Math.min(examBest,100)}%`, background: clears ? 'linear-gradient(90deg,#34d399,#059669)' : 'linear-gradient(90deg,#fb923c,#FF653F)' }}/>
+                          {/* Cut-off marker */}
+                          <div className="absolute top-0 h-full w-0.5" style={{ left:`${Math.min(cutoff,99)}%`, background:'rgba(0,0,0,0.35)', zIndex:2 }}>
+                            <div className="absolute -top-0.5 -translate-x-1/2 text-[8px] font-black text-white bg-gray-700 rounded px-0.5">{cutoff}</div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-[10px] mt-1.5 font-semibold" style={{ color: clears?'#059669':'#d97706' }}>
+                          <span>Your best: {examBest.toFixed(1)}%</span>
+                          <span>{cat} cut-off ≈ {cutoff}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span style={{ color:'#FF653F', fontWeight:700 }}>▲ Your best: {examBest.toFixed(1)}%</span>
-                        <span className="text-gray-500">{cat} cut-off ≈ {cutoff}</span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-2">
+                      {/* Message */}
+                      <div className="px-4 pb-4 pt-1 text-[11px] leading-relaxed" style={{ color: clears?'#047857':'#b45309' }}>
                         {clears
-                          ? `You're ${diff} marks above the indicative ${cat} cut-off for ${selectedGroup.label}. Keep practising to stay safe.`
-                          : `You need about ${Math.abs(diff)} more marks to reach the indicative ${cat} cut-off. Focus on your weak topics above.`}
+                          ? `Great — you're ${diff} marks above the ${cat} cut-off for ${selectedGroup.label}. Keep practising to stay safe.`
+                          : `You need ${Math.abs(diff)} more marks to clear the ${cat} cut-off. Focus on your weak topics above.`}
                       </div>
                     </div>
                   )
@@ -1253,17 +1268,15 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
               )}
 
               {/* Quick practice */}
-              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Quick Practice</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Practice</h2>
+              <div className="flex gap-2 mb-8">
                 {MODES.map(m => (
                   <button key={m.id} onClick={() => onStartTest(m.id)}
-                    className="text-left bg-white border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-all group"
-                    onMouseOver={e=>e.currentTarget.style.borderColor='#fec9b0'}
-                    onMouseOut={e=>e.currentTarget.style.borderColor='#e5e7eb'}>
-                    <div className={`w-11 h-11 ${m.bg} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform`}><m.Icon /></div>
-                    <div className="font-bold text-gray-900 text-sm mb-1">{m.label}</div>
-                    <div className="text-xs text-gray-500 leading-relaxed mb-3">{m.desc}</div>
-                    <span className={`text-xs font-bold ${m.text}`}>Start now →</span>
+                    className={`flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all hover:shadow-sm ${m.light} ${m.border}`}
+                    onMouseOver={e=>e.currentTarget.style.opacity='0.85'}
+                    onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+                    <div className={`w-7 h-7 ${m.bg} rounded-lg flex items-center justify-center text-white flex-shrink-0`}><m.Icon /></div>
+                    <span className={`text-xs font-bold ${m.text} text-left leading-tight`}>{m.label}</span>
                   </button>
                 ))}
               </div>
@@ -2481,7 +2494,6 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                   <span className="text-white flex-shrink-0"><m.Icon /></span>
                   <div>
                     <div className="text-sm font-bold">{m.label}</div>
-                    <div className="text-xs" style={{ color:'#888' }}>{m.desc.split('·')[0].trim()}</div>
                   </div>
                 </button>
               ))}

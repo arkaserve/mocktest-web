@@ -37,8 +37,8 @@ const EXAM_GROUPS = [
 ]
 
 const AI_FEATURES = [
-  { icon:'∞',  title:'Infinite Unique Questions',  desc:'smart engines create fresh questions every session. Zero repetition — ever.',                tag:'Only on MockTest', ic:'#FF653F', bg:'#FFF3EE' },
-  { icon:'🧠', title:'Adaptive Difficulty',         desc:'Tracks accuracy per topic. Starts easy, pushes to hard as you improve.',                  tag:'Smart Engine',    ic:'#059669', bg:'#ECFDF5' },
+  { icon:'∞',  title:'Infinite Unique Questions',  desc:'Every question is uniquely crafted — zero repetition, ever.',                             tag:'Only on MockTest', ic:'#FF653F', bg:'#FFF3EE' },
+  { icon:'🧠', title:'Adaptive Difficulty',         desc:'Tracks accuracy per topic. Starts easy, pushes to hard as you improve.',                  tag:'Smart System',    ic:'#059669', bg:'#ECFDF5' },
   { icon:'⏱', title:'Per-Section 20-Min Timers',   desc:'Each section has its own countdown. Auto-advances on expiry. Exact IBPS/SBI format.',     tag:'Real Exam Feel',     ic:'#D97706', bg:'#FFFBEB' },
   { icon:'📄', title:'PDF with Charts & Solutions', desc:'Download solutions with bar/pie charts, step-by-step working and all wrong answers.',      tag:'Post-Exam Review',   ic:'#7C3AED', bg:'#F5F3FF' },
   { icon:'🎯', title:'35-Topic Practice Mode',      desc:'Pick any topic — Simplification, Puzzles, Syllogism — any count, any difficulty.',        tag:'Targeted Prep',      ic:'#FF653F', bg:'#FFF3EE' },
@@ -106,8 +106,8 @@ function LandingPage({ onNav, initialTab='home' }) {
   const go = (examId) => examId ? onNav('mocktest', examId) : onNav('auth')
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     if (pageRef.current) pageRef.current.scrollTop = 0
-    else window.scrollTo(0, 0)
   }, [tab])
 
   return (
@@ -241,7 +241,7 @@ function LandingPage({ onNav, initialTab='home' }) {
             <div style={{textAlign:'center',marginBottom:52}}>
               <div style={{fontSize:12,fontWeight:700,color:'#FF653F',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:10}}>What Makes Us Different</div>
               <h2 style={{fontSize:38,fontWeight:800,color:'#111',marginBottom:12,letterSpacing:'-0.5px'}}>Study Smart with <span style={{color:'#FF653F'}}>Expert-Crafted</span> Features</h2>
-              <p style={{fontSize:16,color:'#666',maxWidth:520,margin:'0 auto'}}>Not a question bank. 38 smart engines that create questions fresh every time.</p>
+              <p style={{fontSize:16,color:'#666',maxWidth:520,margin:'0 auto'}}>Not a question bank. Every question is uniquely crafted — fresh, exam-accurate, zero repetition.</p>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
               {AI_FEATURES.map((f,i)=>(
@@ -303,18 +303,18 @@ function LandingPage({ onNav, initialTab='home' }) {
               <div style={{fontSize:12,fontWeight:700,color:'#FF653F',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:10}}>How It Works</div>
               <h2 style={{fontSize:38,fontWeight:800,color:'#111',letterSpacing:'-0.5px'}}>5 Steps to Your Success</h2>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px 8px'}}>
+            <div style={{display:'flex',position:'relative'}}>
               {HOW_IT_WORKS.map((s,i)=>(
-                <div key={s.n} style={{textAlign:'center',padding:'0 8px',position:'relative'}}>
+                <div key={s.n} style={{flex:1,textAlign:'center',padding:'0 4px',position:'relative',minWidth:0}}>
                   {i < HOW_IT_WORKS.length-1 && (
-                    <div style={{position:'absolute',top:26,left:'60%',width:'80%',height:2,background:'linear-gradient(90deg,#FF653F,#fec9b0)',zIndex:0,display:'var(--step-line-display,block)'}}/>
+                    <div style={{position:'absolute',top:20,left:'60%',width:'80%',height:2,background:'linear-gradient(90deg,#FF653F,#fec9b0)',zIndex:0}}/>
                   )}
-                  <div style={{width:52,height:52,background:'#FF653F',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',position:'relative',zIndex:1,boxShadow:'0 6px 16px rgba(255,107,53,.3)'}}>
-                    <span style={{fontSize:22}}>{s.icon}</span>
+                  <div style={{width:40,height:40,background:'#FF653F',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 10px',position:'relative',zIndex:1,boxShadow:'0 4px 12px rgba(255,107,53,.3)'}}>
+                    <span style={{fontSize:17}}>{s.icon}</span>
                   </div>
-                  <div style={{fontSize:12,fontWeight:700,color:'#FF653F',marginBottom:5}}>{s.n}</div>
-                  <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:5}}>{s.title}</div>
-                  <div style={{fontSize:13,color:'#666',lineHeight:1.55}}>{s.desc}</div>
+                  <div style={{fontSize:10,fontWeight:700,color:'#FF653F',marginBottom:3}}>{s.n}</div>
+                  <div style={{fontSize:11,fontWeight:700,color:'#111',marginBottom:3,lineHeight:1.3}}>{s.title}</div>
+                  <div style={{fontSize:10,color:'#666',lineHeight:1.4,display:'none'}} className="sm-show">{s.desc}</div>
                 </div>
               ))}
             </div>
@@ -422,7 +422,7 @@ function LandingPage({ onNav, initialTab='home' }) {
             <div style={{marginBottom:36}}>
               <h3 style={{fontSize:22,fontWeight:800,color:'#111',marginBottom:14}}>What We Do</h3>
               <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:14}}>
-                {[{icon:'⚙️',t:'Smart question engines',d:'38 engines that generate fresh, exam-accurate questions with zero repetition.'},{icon:'📊',t:'Smart analytics',d:'Automated weakness detection and category-aware cut-off prediction.'},{icon:'🎯',t:'Personalised prep',d:'Adaptive study planners that adjust to each student in real time.'}].map((c,i)=>(
+                {[{icon:'⚙️',t:'Unique Questions Every Time',d:'Every question is freshly crafted — exam-accurate with zero repetition.'},{icon:'📊',t:'Smart analytics',d:'Automated weakness detection and category-aware cut-off prediction.'},{icon:'🎯',t:'Personalised prep',d:'Adaptive study planners that adjust to each student in real time.'}].map((c,i)=>(
                   <div key={i} className="feat-card" style={{textAlign:'left'}}>
                     <div style={{fontSize:28,marginBottom:10}}>{c.icon}</div>
                     <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:6}}>{c.t}</div>
@@ -502,7 +502,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <div>
                 <h3 style={{fontSize:22,fontWeight:800,color:'#111',marginBottom:14,letterSpacing:'-0.3px'}}>Why <span style={{color:'#FF653F'}}>MockTest</span></h3>
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
-                  {[{t:'Our Mission',d:'To make quality bank exam preparation accessible to every student — free, with no repeated questions and expert-crafted personalisation that was previously only available in expensive coaching centres.'},{t:'How It Works',d:'We built 38 smart engines — one per topic — that generate mathematically valid questions using unique seeds. Every test is completely new. Same student, same exam: zero repetition guaranteed.'},{t:'Exams Covered',d:'IBPS Clerk & PO (Prelims + Mains), SBI Clerk & PO (Prelims + Mains), RRB Office Assistant & Officer Scale-I, and Coal India MT. More exams being added continuously.'},{t:'What Makes Us Unique',d:'No other platform generates questions on the fly. Our adaptive difficulty engine tracks per-topic accuracy and adjusts in real time.'}].map((it,i)=>(
+                  {[{t:'Our Mission',d:'To make quality bank exam preparation accessible to every student — free, with no repeated questions and expert-crafted personalisation that was previously only available in expensive coaching centres.'},{t:'How It Works',d:'Our platform crafts mathematically valid, exam-accurate questions for every session. Every test is completely new. Same student, same exam: zero repetition guaranteed.'},{t:'Exams Covered',d:'IBPS Clerk & PO (Prelims + Mains), SBI Clerk & PO (Prelims + Mains), RRB Office Assistant & Officer Scale-I, and Coal India MT. More exams being added continuously.'},{t:'What Makes Us Unique',d:'No other platform delivers freshly crafted questions for every session. Our adaptive system tracks per-topic accuracy and adjusts in real time.'}].map((it,i)=>(
                     <div key={i} style={{background:'#fafafa',border:'1.5px solid #e5e5e5',borderRadius:14,padding:18}}>
                       <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:6}}>{it.t}</div>
                       <div style={{fontSize:14,color:'#555',lineHeight:1.7}}>{it.d}</div>
@@ -515,7 +515,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <div>
                 <h3 style={{fontSize:22,fontWeight:800,color:'#111',marginBottom:14,letterSpacing:'-0.3px'}}>Expert-Crafted <span style={{color:'#FF653F'}}>Mock Tests</span></h3>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:12}}>
-                  {[{icon:'∞',t:'Zero Repetition',d:'38 smart engines generate unique questions every session.'},{icon:'🧠',t:'Adaptive Difficulty',d:'Starts easy, progresses to hard as your accuracy improves.'},{icon:'📊',t:'Real DI Charts',d:'Interactive bar, pie, line charts in exam and PDF.'},{icon:'⏱',t:'Section Timers',d:'Per-section 20-minute countdown — exact IBPS/SBI format.'},{icon:'📄',t:'PDF Solutions',d:'Full solution PDF with charts and step-by-step working.'},{icon:'🎯',t:'Topic Practice',d:'35 topics. Practice 5–50 questions at any difficulty.'}].map((f,i)=>(
+                  {[{icon:'∞',t:'Zero Repetition',d:'Every question is freshly crafted — no two sessions are ever the same.'},{icon:'🧠',t:'Adaptive Difficulty',d:'Starts easy, progresses to hard as your accuracy improves.'},{icon:'📊',t:'Real DI Charts',d:'Interactive bar, pie, line charts in exam and PDF.'},{icon:'⏱',t:'Section Timers',d:'Per-section 20-minute countdown — exact IBPS/SBI format.'},{icon:'📄',t:'PDF Solutions',d:'Full solution PDF with charts and step-by-step working.'},{icon:'🎯',t:'Topic Practice',d:'35 topics. Practice 5–50 questions at any difficulty.'}].map((f,i)=>(
                     <div key={i} className="feat-card" style={{textAlign:'left',padding:18}}>
                       <div style={{fontSize:24,marginBottom:8}}>{f.icon}</div>
                       <div style={{fontSize:14,fontWeight:700,color:'#111',marginBottom:5}}>{f.t}</div>
@@ -545,8 +545,8 @@ function LandingPage({ onNav, initialTab='home' }) {
                 <p style={{fontSize:14,color:'#555',lineHeight:1.8}}>
                   Anil brings over a decade of experience building scalable software and data systems across the IT industry.
                   A Post Graduate from NIT Durgapur, he founded MockTest to bridge the gap between expensive coaching and
-                  quality preparation — using smart engines to generate unlimited, exam-accurate practice for every student, for free.
-                  He leads the platform's product vision, engine architecture and overall direction.
+                  quality preparation — delivering unlimited, exam-accurate practice for every student, completely free.
+                  He leads the platform's product vision, architecture and overall direction.
                 </p>
               </div>
             </div>
@@ -587,10 +587,10 @@ function LandingPage({ onNav, initialTab='home' }) {
           <div style={{maxWidth:1100,margin:'0 auto'}}>
             <div style={{textAlign:'center',marginBottom:40}}>
               <h2 style={{fontSize:36,fontWeight:800,color:'#111',marginBottom:10,letterSpacing:'-0.5px'}}>Expert-Crafted Mock Tests</h2>
-              <p style={{fontSize:16,color:'#555'}}>Every question generated fresh by our engines — no repeats, adaptive difficulty, real DI charts</p>
+              <p style={{fontSize:16,color:'#555'}}>Every question is uniquely crafted — no repeats, adaptive difficulty, real DI charts</p>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:18,marginBottom:36}}>
-              {[{icon:'∞',t:'Zero Repetition',d:'38 smart engines generate unique questions every session.'},{icon:'🧠',t:'Adaptive Difficulty',d:'Starts easy, progresses to hard as your accuracy improves.'},{icon:'📊',t:'Real DI Charts',d:'Interactive bar, pie, line charts in exam and PDF.'},{icon:'⏱',t:'Section Timers',d:'Per-section 20-minute countdown — exact IBPS/SBI format.'},{icon:'📄',t:'PDF Solutions',d:'Full solution PDF with charts and step-by-step working.'},{icon:'🎯',t:'Topic Practice',d:'35 topics. Practice 5–50 questions at any difficulty.'}].map((f,i)=>(
+              {[{icon:'∞',t:'Zero Repetition',d:'Every question is freshly crafted — no two sessions are ever the same.'},{icon:'🧠',t:'Adaptive Difficulty',d:'Starts easy, progresses to hard as your accuracy improves.'},{icon:'📊',t:'Real DI Charts',d:'Interactive bar, pie, line charts in exam and PDF.'},{icon:'⏱',t:'Section Timers',d:'Per-section 20-minute countdown — exact IBPS/SBI format.'},{icon:'📄',t:'PDF Solutions',d:'Full solution PDF with charts and step-by-step working.'},{icon:'🎯',t:'Topic Practice',d:'35 topics. Practice 5–50 questions at any difficulty.'}].map((f,i)=>(
                 <div key={i} className="feat-card" style={{textAlign:'left'}}>
                   <div style={{fontSize:28,marginBottom:12}}>{f.icon}</div>
                   <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:7}}>{f.t}</div>
@@ -635,7 +635,7 @@ function LandingPage({ onNav, initialTab='home' }) {
             <h2 style={{fontSize:36,fontWeight:800,color:'#111',marginBottom:10,letterSpacing:'-0.5px'}}>Platform Features</h2>
             <p style={{fontSize:15,color:'#555',marginBottom:36}}>Everything you need for complete exam preparation</p>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
-              {[{icon:'⚙️',t:'Question Engines',d:'38 topic-specific engines generating infinite unique questions'},{icon:'🎯',t:'Adaptive Learning',d:'Per-topic difficulty tracking with real-time adjustments'},{icon:'📊',t:'DI Chart Engine',d:'Interactive bar, pie, line charts in exam and PDF'},{icon:'⏱',t:'Exam Simulation',d:'Per-section timers, question palette, mark for review'},{icon:'📈',t:'Performance Analytics',d:'Section-wise, topic-wise accuracy and time analysis'},{icon:'📄',t:'Solution PDF',d:'Download full solutions with charts and explanations'},{icon:'🧠',t:'Study Planner',d:'10/20/30 day personalised study plans'},{icon:'🔔',t:'Progress Tracking',d:'Daily targets, streaks and achievement badges'},{icon:'💬',t:'Step-by-Step Solutions',d:'Every question explained with working shown'}].map((f,i)=>(
+              {[{icon:'⚙️',t:'Unique Questions Every Time',d:'Expertly crafted, exam-accurate questions for every topic and session'},{icon:'🎯',t:'Adaptive Learning',d:'Per-topic difficulty tracking with real-time adjustments'},{icon:'📊',t:'Data Interpretation Charts',d:'Interactive bar, pie, line charts in exam and PDF'},{icon:'⏱',t:'Exam Simulation',d:'Per-section timers, question palette, mark for review'},{icon:'📈',t:'Performance Analytics',d:'Section-wise, topic-wise accuracy and time analysis'},{icon:'📄',t:'Solution PDF',d:'Download full solutions with charts and explanations'},{icon:'🧠',t:'Study Planner',d:'10/20/30 day personalised study plans'},{icon:'🔔',t:'Progress Tracking',d:'Daily targets, streaks and achievement badges'},{icon:'💬',t:'Step-by-Step Solutions',d:'Every question explained with working shown'}].map((f,i)=>(
                 <div key={i} className="feat-card" style={{textAlign:'left'}}>
                   <div style={{fontSize:26,marginBottom:10}}>{f.icon}</div>
                   <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:5}}>{f.t}</div>
@@ -689,7 +689,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <p style={{fontSize:15,color:'#555'}}>Study tips, exam updates and strategy guides</p>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:18}}>
-              {[{tag:'Strategy',t:'How to clear IBPS PO cut-off in Numerical Ability',d:'Section cut-offs are tougher than the overall cut-off. A topic-wise strategy that works.',date:'May 2026',c:'#FF653F'},{tag:'Exam Tips',t:'DI Sets: How to attempt 5 questions in under 4 minutes',d:'With the right approach, DI sets are free marks. Exactly how to tackle them.',date:'Apr 2026',c:'#059669'},{tag:'Smart Features',t:'How our 38 smart engines generate questions',d:'Behind-the-scenes look at how MockTest creates unique questions every session.',date:'Apr 2026',c:'#0891B2'},{tag:'Reasoning',t:'Floor puzzles solved: the 7-row table method',d:'Master floor puzzles in 10 minutes using this systematic approach.',date:'Mar 2026',c:'#D97706'},{tag:'GK',t:'RBI Monetary Policy 2026 — What you need to know',d:'Repo rate, reverse repo, CRR, SLR — complete update for IBPS Mains.',date:'Mar 2026',c:'#7C3AED'},{tag:'Career Tan',t:'60-day study plan for IBPS Clerk Prelims',d:'A day-by-day schedule with recommended question counts and revision checkpoints.',date:'Feb 2026',c:'#FF653F'}].map((p,i)=>(
+              {[{tag:'Strategy',t:'How to clear IBPS PO cut-off in Numerical Ability',d:'Section cut-offs are tougher than the overall cut-off. A topic-wise strategy that works.',date:'May 2026',c:'#FF653F'},{tag:'Exam Tips',t:'DI Sets: How to attempt 5 questions in under 4 minutes',d:'With the right approach, DI sets are free marks. Exactly how to tackle them.',date:'Apr 2026',c:'#059669'},{tag:'Smart Features',t:'How MockTest delivers unique questions every session',d:'Behind-the-scenes look at how MockTest ensures fresh, exam-accurate questions every time.',date:'Apr 2026',c:'#0891B2'},{tag:'Reasoning',t:'Floor puzzles solved: the 7-row table method',d:'Master floor puzzles in 10 minutes using this systematic approach.',date:'Mar 2026',c:'#D97706'},{tag:'GK',t:'RBI Monetary Policy 2026 — What you need to know',d:'Repo rate, reverse repo, CRR, SLR — complete update for IBPS Mains.',date:'Mar 2026',c:'#7C3AED'},{tag:'Career Tan',t:'60-day study plan for IBPS Clerk Prelims',d:'A day-by-day schedule with recommended question counts and revision checkpoints.',date:'Feb 2026',c:'#FF653F'}].map((p,i)=>(
                 <div key={i} style={{border:'1.5px solid #e5e5e5',borderRadius:14,overflow:'hidden',background:'#fff',transition:'transform .15s,box-shadow .15s'}}
                   onMouseOver={e=>{e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow='0 12px 32px rgba(0,0,0,.08)'}}
                   onMouseOut={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='none'}}>

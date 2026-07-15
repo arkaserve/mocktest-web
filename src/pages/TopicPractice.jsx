@@ -172,7 +172,7 @@ export default function TopicPractice({
             </div>
             <span className="text-sm font-black text-gray-900">Topic Practice</span>
           </div>
-          <p className="text-xs text-gray-400 ml-9">35 topics · engine-generated</p>
+          <p className="text-xs text-gray-400 ml-9">35 topics · unique questions every session</p>
 
           {/* Search */}
           <div className="relative mt-3">
@@ -202,6 +202,7 @@ export default function TopicPractice({
                 <span className="text-xs text-gray-300 ml-auto">{sec.topics.length}</span>
               </div>
 
+              <div className="grid grid-cols-2 gap-1 px-3 pb-1">
               {sec.topics.map(t => {
                 const score    = studentScores[t.id]
                 const isActive = selected?.id === t.id
@@ -209,29 +210,29 @@ export default function TopicPractice({
                   <button
                     key={t.id}
                     onClick={() => { setSelected(t); setDifficulty('easy'); setQCount(10) }}
-                    className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-all ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-left transition-all ${
                       isActive
-                        ? 'bg-blue-50 border-r-4 border-blue-600'
-                        : 'hover:bg-gray-50 border-r-4 border-transparent'
+                        ? 'bg-blue-50 border border-blue-300'
+                        : 'hover:bg-gray-50 border border-transparent'
                     }`}
                   >
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    <div className={`w-6 h-6 rounded-md flex items-center justify-center text-xs flex-shrink-0 ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}>
                       {t.icon}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className={`text-xs font-bold truncate leading-tight ${isActive ? 'text-blue-700' : 'text-gray-800'}`}>
                         {t.name}
                       </div>
-                      <div className="text-xs text-gray-400 truncate mt-0.5">{t.exam}</div>
                     </div>
                     {score?.best && (
-                      <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${isActive ? 'bg-blue-200 text-blue-800' : 'bg-green-100 text-green-700'}`}>
+                      <span className={`text-[10px] font-bold px-1 py-0.5 rounded-full flex-shrink-0 ${isActive ? 'bg-blue-200 text-blue-800' : 'bg-green-100 text-green-700'}`}>
                         {score.best}
                       </span>
                     )}
                   </button>
                 )
               })}
+              </div>
             </div>
           ))}
           <div className="h-6" />
@@ -272,7 +273,7 @@ export default function TopicPractice({
             <div className="mt-10 grid grid-cols-3 gap-4 w-full max-w-xl">
               {[
                 { icon: '🔢', label: '35 Topics',         sub: 'All IBPS/SBI syllabus'  },
-                { icon: '⚡', label: 'Engine-generated',  sub: 'No DB needed'            },
+                { icon: '⚡', label: 'Fresh Every Time',   sub: 'Zero repetition'         },
                 { icon: '🎯', label: '5 Difficulty levels', sub: 'Easy to Adaptive'      },
               ].map(s => (
                 <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-4 text-center">

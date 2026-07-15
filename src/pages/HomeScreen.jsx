@@ -194,10 +194,10 @@ function FullMockTab({ studentName, onStart, initialExamId = '', registeredExamI
       {/* Bank tabs */}
       <div>
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Select bank</p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'none'}}>
           {tree.map(g => (
             <button key={g.bank} onClick={() => changeBank(g.bank)}
-              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm border-2 transition-all
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl font-semibold text-sm border-2 transition-all whitespace-nowrap
                 ${bank===g.bank ? 'text-white' : 'border-gray-200 text-gray-700 hover:border-orange-300'}`}
               style={bank===g.bank ? {borderColor:'#FF653F',background:'#FF653F'} : {}}>
               {g.bank}
@@ -301,7 +301,7 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
           {currentSection.label} — {currentSection.topics.length} Topics
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
           {currentSection.topics.map(t => {
             const isSel = topic?.id === t.id
             return (
@@ -318,7 +318,6 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
                   </span>
                   {isSel && <span className="text-[10px] text-white px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background:'#FF653F' }}>✓</span>}
                 </div>
-                <div className="text-xs text-gray-500 mt-0.5 truncate">{t.sub}</div>
               </button>
             )
           })}
@@ -440,9 +439,6 @@ function SectionTestTab({ studentName, onStart, user = null }) {
           <button key={s.id} onClick={()=>{setSec(s.id);setError('')}}
             className={`p-4 rounded-2xl border-2 text-left transition-all
               ${sec===s.id ? `border-2 ${s.border} ${s.bg}` : 'border-gray-200 bg-white hover:border-gray-300'}`}>
-            <div className="w-8 h-8 rounded-xl mb-2 flex items-center justify-center" style={{background:s.accent}}>
-              <span className="text-white text-sm font-bold">{s.label[0]}</span>
-            </div>
             <div className={`text-xs font-bold mb-1 ${sec===s.id?s.text:'text-gray-700'}`}>{s.label}</div>
             <div className="text-xs text-gray-400">{s.q}Q · {s.mins} min</div>
           </button>
