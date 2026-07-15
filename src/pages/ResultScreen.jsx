@@ -1179,11 +1179,11 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                             <span className="text-xs font-bold text-red-600 w-10 text-right">{fmt(w.accuracy)}%</span>
                           </div>
                           <p className="text-xs text-gray-500 mb-2 leading-relaxed">{w.root_cause}</p>
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full whitespace-nowrap">
                               +{w.exam_impact} marks if fixed
                             </span>
-                            <span className="text-xs text-gray-400 truncate">{w.suggested_action}</span>
+                            <span className="text-xs text-gray-400 leading-snug">{w.suggested_action}</span>
                           </div>
                         </div>
                       )
@@ -1375,24 +1375,28 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                           const col   = attempted===0 ? '#9ca3af' : acc>=60?'#10b981':acc>=35?'#f59e0b':'#ef4444'
                           const status= attempted===0 ? 'Not attempted' : acc>=60?'Strong' : acc>=35?'Needs work' : 'Weak'
                           return (
-                            <div key={topic} className="flex items-center gap-4 px-4 py-4 rounded-2xl bg-white border-2"
+                            <div key={topic} className="rounded-2xl bg-white border-2 overflow-hidden"
                               style={{ borderColor:`${col}44`, borderLeftColor:col, borderLeftWidth:6 }}>
-                              <div className="w-48 flex-shrink-0 min-w-0">
-                                <div className="text-base font-bold text-gray-900 truncate">{tName(topic)}</div>
-                                <div className="text-xs font-bold uppercase tracking-wide mt-0.5" style={{ color:col }}>{status}</div>
+                              <div className="flex items-center gap-3 px-3 pt-3 pb-1.5">
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-bold text-gray-900 truncate">{tName(topic)}</div>
+                                  <div className="text-[10px] font-bold uppercase tracking-wide mt-0.5" style={{ color:col }}>{status}</div>
+                                </div>
+                                <span className="text-base font-black flex-shrink-0" style={{ color:col }}>
+                                  {attempted===0 ? '—' : `${acc}%`}
+                                </span>
                               </div>
-                              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
-                                <div className="h-full rounded-full transition-all" style={{ width:`${acc}%`, background:col }}/>
+                              <div className="px-3 pb-3 space-y-1">
+                                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="h-full rounded-full transition-all" style={{ width:`${acc}%`, background:col }}/>
+                                </div>
+                                <div className="text-[11px] text-gray-500">
+                                  <span className="font-bold text-green-600">{corr} correct</span>
+                                  {' · '}
+                                  <span className="font-bold text-red-500">{wrng} wrong</span>
+                                  {skip > 0 && <span className="text-gray-400"> · {skip} skipped</span>}
+                                </div>
                               </div>
-                              <span className="text-lg font-black w-14 text-right" style={{ color:col }}>
-                                {attempted===0 ? '—' : `${acc}%`}
-                              </span>
-                              <span className="text-sm w-44 text-right flex-shrink-0">
-                                <span className="font-bold text-green-600">{corr} correct</span>
-                                {' · '}
-                                <span className="font-bold text-red-500">{wrng} wrong</span>
-                                {skip > 0 && <span className="text-gray-400"> · {skip} skipped</span>}
-                              </span>
                             </div>
                           )
                         })}

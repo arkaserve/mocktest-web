@@ -422,7 +422,7 @@ export default function AuthScreen({ onAuth, onBack }) {
               </div>
 
               {/* DOB + Gender */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className={lbl}>Date of birth <span className="text-red-500">*</span></label>
                   <input type="date" max={new Date().toISOString().split('T')[0]} value={regData.dob}

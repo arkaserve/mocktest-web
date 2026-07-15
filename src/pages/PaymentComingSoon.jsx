@@ -72,11 +72,18 @@ export default function PaymentComingSoon({ plan = 'intermediate', onBack }) {
         </button>
       </div>
 
+      <style>{`
+        @media(max-width:480px){
+          .pcs-card{padding:28px 20px!important}
+          .pcs-notify-row{flex-direction:column!important}
+          .pcs-notify-row input,.pcs-notify-row button{border-radius:9px!important;width:100%}
+        }
+      `}</style>
       {/* Card area */}
-      <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px 24px'}}>
+      <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 16px'}}>
 
       {/* Card */}
-      <div style={{
+      <div className="pcs-card" style={{
         background:'#fff', borderRadius:24, padding:'40px 36px',
         maxWidth:480, width:'100%',
         boxShadow:'0 16px 48px rgba(255,101,63,.14)',
@@ -139,7 +146,7 @@ export default function PaymentComingSoon({ plan = 'intermediate', onBack }) {
           <div style={{fontSize:12, fontWeight:700, color:'#0f172a', marginBottom:8}}>
             🔔 Notify me when payment is live
           </div>
-          <div style={{display:'flex', gap:8}}>
+          <div className="pcs-notify-row" style={{display:'flex', gap:8}}>
             <input
               type="email"
               placeholder="your@email.com"

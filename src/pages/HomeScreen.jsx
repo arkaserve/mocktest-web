@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { generateTest, generateMiniTest, generateTopicTest } from '../api.js'
 
 // ── Sidebar icons — identical set to the Dashboard sidebar ─────
@@ -294,14 +294,14 @@ function TopicPracticeTab({ studentName, onStart, user = null, sectionId = 'nume
   const diffStyle = { easy:'bg-emerald-100 text-emerald-800 border-emerald-300', medium:'bg-amber-100 text-amber-800 border-amber-300', hard:'bg-red-100 text-red-800 border-red-300', mixed:'bg-orange-100 text-orange-800 border-orange-300', diagnostic:'bg-orange-100 text-orange-800 border-orange-300' }
 
   return (
-    <div className="flex gap-4 items-start">
+    <div className="flex flex-col xl:flex-row gap-4 items-start">
 
       {/* ── TOPIC CARDS for selected section ── */}
       <div className="flex-1 min-w-0">
         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
           {currentSection.label} — {currentSection.topics.length} Topics
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
           {currentSection.topics.map(t => {
             const isSel = topic?.id === t.id
             return (
@@ -487,6 +487,11 @@ function SectionTestTab({ studentName, onStart, user = null }) {
 export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogout, startMode = 'mock', startExamId = '', user = null }) {
   const [tab,        setTab]        = useState(startMode)
   const [topicSecId, setTopicSecId] = useState('numerical_ability')
+  const mainRef = useRef(null)
+
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0
+  }, [tab])
 
   // Registration + subscription → which exams the user may launch
   const _meta = user?.user_metadata || {}
@@ -598,7 +603,7 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
         </aside>
 
         {/* ── Main content ── */}
-        <main className="flex-1 overflow-y-auto nice-scroll py-7 px-6">
+        <main ref={mainRef} className="flex-1 overflow-y-auto nice-scroll py-7 px-6">
           <div className="w-full">
 
             <div className="mb-6">

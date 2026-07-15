@@ -1,4 +1,4 @@
-import { useState, memo } from 'react'
+import { useState, memo, useRef, useEffect } from 'react'
 
 /* ─── DATA — outside component, created once ─── */
 const ALL_EXAMS = [
@@ -102,10 +102,16 @@ function LandingPage({ onNav, initialTab='home' }) {
   const [tab,     setTab]    = useState(initialTab)
   const [openTip, setOpenTip]= useState(null)
   const [examTab, setExamTab]= useState(0)
+  const pageRef = useRef(null)
   const go = (examId) => examId ? onNav('mocktest', examId) : onNav('auth')
 
+  useEffect(() => {
+    if (pageRef.current) pageRef.current.scrollTop = 0
+    else window.scrollTo(0, 0)
+  }, [tab])
+
   return (
-    <div style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',minHeight:'100vh',color:'#1a1a1a'}}>
+    <div ref={pageRef} style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',minHeight:'100vh',color:'#1a1a1a',overflowY:'auto'}}>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -134,6 +140,12 @@ function LandingPage({ onNav, initialTab='home' }) {
         #exam-scroll::-webkit-scrollbar{display:none}
         button:active{transform:translateY(0)!important;opacity:.9}
         section{contain:layout style}
+        @media(max-width:600px){
+          section{padding-left:16px!important;padding-right:16px!important}
+          .feat-card{padding:20px!important}
+          .exam-chip{padding:10px 14px!important}
+          #exam-scroll{gap:8px!important}
+        }
       `}</style>
 
       {/* NAV is now the shared <Navbar/> rendered by App.jsx (consistent across all pages) */}
@@ -291,11 +303,11 @@ function LandingPage({ onNav, initialTab='home' }) {
               <div style={{fontSize:12,fontWeight:700,color:'#FF653F',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:10}}>How It Works</div>
               <h2 style={{fontSize:38,fontWeight:800,color:'#111',letterSpacing:'-0.5px'}}>5 Steps to Your Success</h2>
             </div>
-            <div style={{display:'flex',position:'relative'}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px 8px'}}>
               {HOW_IT_WORKS.map((s,i)=>(
-                <div key={s.n} style={{flex:1,textAlign:'center',padding:'0 16px',position:'relative'}}>
+                <div key={s.n} style={{textAlign:'center',padding:'0 8px',position:'relative'}}>
                   {i < HOW_IT_WORKS.length-1 && (
-                    <div style={{position:'absolute',top:26,left:'60%',width:'80%',height:2,background:'linear-gradient(90deg,#FF653F,#fec9b0)',zIndex:0}}/>
+                    <div style={{position:'absolute',top:26,left:'60%',width:'80%',height:2,background:'linear-gradient(90deg,#FF653F,#fec9b0)',zIndex:0,display:'var(--step-line-display,block)'}}/>
                   )}
                   <div style={{width:52,height:52,background:'#FF653F',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',position:'relative',zIndex:1,boxShadow:'0 6px 16px rgba(255,107,53,.3)'}}>
                     <span style={{fontSize:22}}>{s.icon}</span>
@@ -368,24 +380,22 @@ function LandingPage({ onNav, initialTab='home' }) {
                 </button>
               ))}
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:14}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,280px),1fr))',gap:14}}>
               {EXAM_GROUPS[examTab]?.exams.map(e=>(
-                <div key={e.id} style={{border:'1.5px solid #e5e5e5',borderRadius:14,padding:18,background:'#fff',display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,transition:'border-color .12s,box-shadow .12s'}}
+                <div key={e.id} style={{border:'1.5px solid #e5e5e5',borderRadius:14,padding:'12px 14px',background:'#fff',display:'flex',alignItems:'center',gap:10,transition:'border-color .12s,box-shadow .12s'}}
                   onMouseOver={e2=>{e2.currentTarget.style.borderColor='#FF653F';e2.currentTarget.style.boxShadow='0 4px 16px rgba(255,107,53,.1)'}}
                   onMouseOut={e2=>{e2.currentTarget.style.borderColor='#e5e5e5';e2.currentTarget.style.boxShadow='none'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:14}}>
-                    <div style={{width:44,height:44,borderRadius:11,background:'#FFF3EE',border:'1.5px solid #fec9b0',display:'flex',alignItems:'center',justifyContent:'center',color:'#FF653F',fontSize:13,fontWeight:800,flexShrink:0}}>
-                      {EXAM_GROUPS[examTab].id.toUpperCase().slice(0,3)}
-                    </div>
-                    <div>
-                      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
-                        <span style={{fontSize:14,fontWeight:700,color:'#111'}}>{e.name}</span>
-                        {e.tag && <span style={{fontSize:10,fontWeight:700,background:'#FFF3EE',color:'#FF653F',padding:'2px 8px',borderRadius:8}}>{e.tag}</span>}
-                      </div>
-                      <div style={{fontSize:12,color:'#888'}}>{e.meta} · Negative: -0.25</div>
-                    </div>
+                  <div style={{width:42,height:42,borderRadius:10,background:'#FFF3EE',border:'1.5px solid #fec9b0',display:'flex',alignItems:'center',justifyContent:'center',color:'#FF653F',fontSize:12,fontWeight:800,flexShrink:0}}>
+                    {EXAM_GROUPS[examTab].id.toUpperCase().slice(0,3)}
                   </div>
-                  <button onClick={()=>go(e.id)} className="btn-orange" style={{flexShrink:0,padding:'9px 20px',fontSize:13}}>Launch</button>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',alignItems:'flex-start',gap:6,flexWrap:'wrap',marginBottom:2}}>
+                      <span style={{fontSize:13,fontWeight:700,color:'#111',lineHeight:1.4}}>{e.name}</span>
+                      {e.tag && <span style={{fontSize:10,fontWeight:700,background:'#FFF3EE',color:'#FF653F',padding:'2px 7px',borderRadius:8,flexShrink:0,whiteSpace:'nowrap'}}>{e.tag}</span>}
+                    </div>
+                    <div style={{fontSize:11,color:'#888',lineHeight:1.4}}>{e.meta} · -0.25 marks</div>
+                  </div>
+                  <button onClick={()=>go(e.id)} className="btn-orange" style={{flexShrink:0,padding:'7px 12px',fontSize:12,whiteSpace:'nowrap'}}>Launch</button>
                 </div>
               ))}
             </div>
