@@ -118,6 +118,19 @@ function LandingPage({ onNav, initialTab='home' }) {
 
   return (
     <div ref={pageRef} style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',minHeight:'100vh',color:'#1a1a1a',overflowY:'auto'}}>
+
+      {/* Fixed flip-digit visitor counter — bottom left */}
+      {visitorCount !== null && (
+        <div style={{position:'fixed',left:0,bottom:20,zIndex:999,display:'flex',flexDirection:'row',alignItems:'center',gap:8,padding:'8px 14px 8px 12px',background:'#1a1a1a',borderRadius:'0 12px 12px 0',boxShadow:'0 4px 20px rgba(0,0,0,0.35)'}}>
+          <div style={{display:'flex',flexDirection:'row',gap:3}}>
+            {String(visitorCount).padStart(6,'0').split('').map((d,i) => (
+              <div key={i} style={{width:22,height:28,background:'#2d2d2d',borderRadius:5,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid #3a3a3a',boxShadow:'inset 0 2px 4px rgba(0,0,0,0.4)'}}>
+                <span style={{fontSize:14,fontWeight:800,color:'#FF653F',fontVariantNumeric:'tabular-nums',lineHeight:1}}>{d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -194,14 +207,6 @@ function LandingPage({ onNav, initialTab='home' }) {
               Full access to mock tests, study planner &amp; explanations free for 7 days.
             </p>
 
-            {/* Live visitor counter */}
-            {visitorCount !== null && (
-              <div className="fu" style={{display:'flex',justifyContent:'center',alignItems:'center',gap:10,marginBottom:44,padding:'20px 0',borderTop:'1px solid #f0f0f0',borderBottom:'1px solid #f0f0f0',animationDelay:'.2s'}}>
-                <span style={{fontSize:13,color:'#888',fontWeight:500}}>👥</span>
-                <span style={{fontSize:22,fontWeight:800,color:'#FF653F',letterSpacing:'-0.5px'}}>{visitorCount.toLocaleString('en-IN')}+</span>
-                <span style={{fontSize:13,color:'#888',fontWeight:500}}>students have visited MockTest</span>
-              </div>
-            )}
 
             {/* Feature pills */}
             <div className="fu" style={{display:'flex',justifyContent:'center',gap:10,flexWrap:'wrap',animationDelay:'.25s'}}>
