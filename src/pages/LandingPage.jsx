@@ -1,4 +1,5 @@
-import { useState, memo, useRef, useEffect } from 'react'
+import { useState, memo, useRef, useEffect, useCallback } from 'react'
+import api from '../api'
 
 /* ─── DATA — outside component, created once ─── */
 const ALL_EXAMS = [
@@ -37,11 +38,10 @@ const EXAM_GROUPS = [
 ]
 
 const AI_FEATURES = [
-  { icon:'∞',  title:'Infinite Unique Questions',  desc:'Every question is uniquely crafted — zero repetition, ever.',                             tag:'Only on MockTest', ic:'#FF653F', bg:'#FFF3EE' },
-  { icon:'🧠', title:'Adaptive Difficulty',         desc:'Tracks accuracy per topic. Starts easy, pushes to hard as you improve.',                  tag:'Smart System',    ic:'#059669', bg:'#ECFDF5' },
-  { icon:'⏱', title:'Per-Section 20-Min Timers',   desc:'Each section has its own countdown. Auto-advances on expiry. Exact IBPS/SBI format.',     tag:'Real Exam Feel',     ic:'#D97706', bg:'#FFFBEB' },
-  { icon:'📄', title:'PDF with Charts & Solutions', desc:'Download solutions with bar/pie charts, step-by-step working and all wrong answers.',      tag:'Post-Exam Review',   ic:'#7C3AED', bg:'#F5F3FF' },
-  { icon:'🎯', title:'35-Topic Practice Mode',      desc:'Pick any topic — Simplification, Puzzles, Syllogism — any count, any difficulty.',        tag:'Targeted Prep',      ic:'#FF653F', bg:'#FFF3EE' },
+  { icon:'∞',  title:'Infinite Unique Questions',   desc:'Every question is uniquely crafted — zero repetition, ever.',                         tag:'Only on MockTest', ic:'#FF653F', bg:'#FFF3EE' },
+  { icon:'🧠', title:'Adaptive Difficulty',         desc:'Tracks accuracy per topic. Starts easy, pushes to hard as you improve.          ',    tag:'Smart System',    ic:'#D97706', bg:'#FFFBEB' },
+  { icon:'⏱', title:'Per-Section Timers',          desc:'Each section has its own countdown. Auto-advances on expiry. Exact IBPS/SBI format.', tag:'Real Exam Feel',  ic:'#D97706', bg:'#FFFBEB' },
+  { icon:'📄', title:'PDF with Charts & Solutions', desc:'Download solutions with bar/pie charts, step-by-step working and all wrong answers.',  tag:'Post-Exam Review',ic:'#7C3AED', bg:'#F5F3FF' },
 ]
 
 const PLANS = [
@@ -58,12 +58,6 @@ const HOW_IT_WORKS = [
   { n:'05', title:'Achieve Your Goal',  desc:'Succeed with confidence.',            icon:'🏆' },
 ]
 
-const STATS = [
-  { num:'10,000+', label:'Mock Tests Attempted' },
-  { num:'5,000+',  label:'Aspirants Trust Us'   },
-  { num:'1M+',     label:'Questions Available'  },
-  { num:'50+',     label:'Exams Covered'        },
-]
 
 const TESTIMONIALS = [
   { text:'The expert-crafted questions are genuinely at exam level. I took 12 tests and not a single question repeated. The section timers made the real exam feel familiar.', name:'Priya S.',   exam:'IBPS Clerk 2024 — Selected', init:'PS', c:'#FF653F' },
@@ -99,11 +93,23 @@ const NAV_LINKS = [
 
 /* ─── COMPONENT ─── */
 function LandingPage({ onNav, initialTab='home' }) {
-  const [tab,     setTab]    = useState(initialTab)
-  const [openTip, setOpenTip]= useState(null)
-  const [examTab, setExamTab]= useState(0)
+  const [tab,          setTab]         = useState(initialTab)
+  const [openTip,      setOpenTip]     = useState(null)
+  const [examTab,      setExamTab]     = useState(0)
+  const [visitorCount, setVisitorCount] = useState(null)
   const pageRef = useRef(null)
   const go = (examId) => examId ? onNav('mocktest', examId) : onNav('auth')
+
+  useEffect(() => {
+    // Generate or reuse a session ID for this browser session
+    let sid = sessionStorage.getItem('_vsid')
+    if (!sid) {
+      sid = Math.random().toString(36).slice(2) + Date.now().toString(36)
+      sessionStorage.setItem('_vsid', sid)
+      api.post('/visitor/ping', {}, { headers: { 'x-session-id': sid } }).catch(() => {})
+    }
+    api.get('/visitor/count').then(r => setVisitorCount(r.data.count)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -159,7 +165,7 @@ function LandingPage({ onNav, initialTab='home' }) {
 
             <div className="fu" style={{display:'inline-flex',alignItems:'center',gap:8,background:'#FFF3EE',border:'1px solid #fec9b0',color:'#FF653F',borderRadius:24,padding:'6px 18px',fontSize:13,fontWeight:600,marginBottom:28}}>
               <span style={{width:7,height:7,background:'#FF653F',borderRadius:'50%',display:'inline-block',animation:'pulse 2s infinite'}}/>
-              Expert-Crafted Banking Exam Preparation · Trusted by 5,000+ Aspirants
+              Expert-Crafted Competitive Exam Preparation · Trusted by 5,000+ Aspirants
             </div>
 
             <h1 className="fu" style={{fontSize:'clamp(30px,5vw,54px)',fontWeight:900,color:'#111',lineHeight:1.12,marginBottom:22,letterSpacing:'-1.5px',animationDelay:'.05s'}}>
@@ -187,19 +193,18 @@ function LandingPage({ onNav, initialTab='home' }) {
               Full access to mock tests, study planner &amp; explanations free for 7 days.
             </p>
 
-            {/* Social proof numbers */}
-            <div className="fu" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:'20px 0',marginBottom:44,padding:'28px 0',borderTop:'1px solid #f0f0f0',borderBottom:'1px solid #f0f0f0',animationDelay:'.2s'}}>
-              {STATS.map((s,i)=>(
-                <div key={s.num} style={{textAlign:'center',padding:'0 16px'}}>
-                  <div style={{fontSize:28,fontWeight:800,color:'#FF653F',letterSpacing:'-0.5px',whiteSpace:'nowrap'}}>{s.num}</div>
-                  <div style={{fontSize:13,color:'#888',marginTop:4,fontWeight:500}}>{s.label}</div>
-                </div>
-              ))}
-            </div>
+            {/* Live visitor counter */}
+            {visitorCount !== null && (
+              <div className="fu" style={{display:'flex',justifyContent:'center',alignItems:'center',gap:10,marginBottom:44,padding:'20px 0',borderTop:'1px solid #f0f0f0',borderBottom:'1px solid #f0f0f0',animationDelay:'.2s'}}>
+                <span style={{fontSize:13,color:'#888',fontWeight:500}}>👥</span>
+                <span style={{fontSize:22,fontWeight:800,color:'#FF653F',letterSpacing:'-0.5px'}}>{visitorCount.toLocaleString('en-IN')}+</span>
+                <span style={{fontSize:13,color:'#888',fontWeight:500}}>students have visited MockTest</span>
+              </div>
+            )}
 
             {/* Feature pills */}
             <div className="fu" style={{display:'flex',justifyContent:'center',gap:10,flexWrap:'wrap',animationDelay:'.25s'}}>
-              {[['🧠','Study Plan'],['📅','Smart Timetable'],['📝','Infinite Mock Tests'],['📊','Performance Insights'],['🎯','35-Topic Practice']].map(([ic,lbl])=>(
+              {[['🧠','Study Plan'],['📅','Smart Timetable'],['📝','Infinite Mock Tests'],['📊','Performance Insights'],['🎯','Topic Practice']].map(([ic,lbl])=>(
                 <div key={lbl} style={{display:'inline-flex',alignItems:'center',gap:7,background:'#f8f8f8',border:'1px solid #e5e5e5',borderRadius:24,padding:'7px 16px'}}>
                   <span style={{fontSize:14}}>{ic}</span>
                   <span style={{fontSize:13,fontWeight:500,color:'#444'}}>{lbl}</span>
@@ -243,7 +248,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <h2 style={{fontSize:38,fontWeight:800,color:'#111',marginBottom:12,letterSpacing:'-0.5px'}}>Study Smart with <span style={{color:'#FF653F'}}>Expert-Crafted</span> Features</h2>
               <p style={{fontSize:16,color:'#666',maxWidth:520,margin:'0 auto'}}>Not a question bank. Every question is uniquely crafted — fresh, exam-accurate, zero repetition.</p>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:20}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:20}}>
               {AI_FEATURES.map((f,i)=>(
                 <div key={i} className="feat-card">
                   <div style={{width:52,height:52,borderRadius:14,background:f.bg,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26,marginBottom:18}}>{f.icon}</div>
@@ -492,7 +497,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <h2 style={{fontSize:44,fontWeight:800,color:'#111',lineHeight:1.15,letterSpacing:'-1px'}}>
                 Study Coach for <span style={{color:'#FF653F'}}>Every Competitive Exam Goal</span>
               </h2>
-              <p style={{fontSize:15,color:'#888',marginTop:14}}>India's first fully expert-crafted mock test platform · by Anil Software Technologies</p>
+              <p style={{fontSize:15,color:'#888',marginTop:14}}>India's first fully expert-crafted competitive exam platform · by Anil Software Technologies</p>
             </div>
 
             {/* Two columns spread to the edges */}
@@ -502,7 +507,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <div>
                 <h3 style={{fontSize:22,fontWeight:800,color:'#111',marginBottom:14,letterSpacing:'-0.3px'}}>Why <span style={{color:'#FF653F'}}>MockTest</span></h3>
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
-                  {[{t:'Our Mission',d:'To make quality bank exam preparation accessible to every student — free, with no repeated questions and expert-crafted personalisation that was previously only available in expensive coaching centres.'},{t:'How It Works',d:'Our platform crafts mathematically valid, exam-accurate questions for every session. Every test is completely new. Same student, same exam: zero repetition guaranteed.'},{t:'Exams Covered',d:'IBPS Clerk & PO (Prelims + Mains), SBI Clerk & PO (Prelims + Mains), RRB Office Assistant & Officer Scale-I, and Coal India MT. More exams being added continuously.'},{t:'What Makes Us Unique',d:'No other platform delivers freshly crafted questions for every session. Our adaptive system tracks per-topic accuracy and adjusts in real time.'}].map((it,i)=>(
+                  {[{t:'Our Mission',d:'To make quality competitive exam preparation accessible to every student — free, with no repeated questions and expert-crafted personalisation that was previously only available in expensive coaching centres.'},{t:'How It Works',d:'Our platform crafts mathematically valid, exam-accurate questions for every session. Every test is completely new. Same student, same exam: zero repetition guaranteed.'},{t:'Exams Covered',d:'IBPS Clerk & PO (Prelims + Mains), SBI Clerk & PO (Prelims + Mains), RRB Office Assistant & Officer Scale-I, and Coal India MT. More exams being added continuously.'},{t:'What Makes Us Unique',d:'No other platform delivers freshly crafted questions for every session. Our adaptive system tracks per-topic accuracy and adjusts in real time.'}].map((it,i)=>(
                     <div key={i} style={{background:'#fafafa',border:'1.5px solid #e5e5e5',borderRadius:14,padding:18}}>
                       <div style={{fontSize:15,fontWeight:700,color:'#111',marginBottom:6}}>{it.t}</div>
                       <div style={{fontSize:14,color:'#555',lineHeight:1.7}}>{it.d}</div>

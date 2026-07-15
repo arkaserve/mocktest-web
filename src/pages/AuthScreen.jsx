@@ -208,7 +208,7 @@ export default function AuthScreen({ onAuth, onBack }) {
             Crack your exam<br />with expert-crafted<br />practice tests
           </h1>
           <p style={{ color:'#666', fontSize:14, lineHeight:1.8, marginBottom:32, maxWidth:430 }}>
-            India's first fully expert-crafted mock test platform. Category-aware cut-off
+            India's first fully expert-crafted competitive exam platform. Category-aware cut-off
             tracking for UR, OBC, SC, ST, EWS and PwBD candidates.
           </p>
 

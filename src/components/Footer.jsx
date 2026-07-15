@@ -142,7 +142,7 @@ export default function Footer({ onNav }) {
                 <span style={{ fontSize:17, fontWeight:800, color:'#fff' }}>MockTest</span>
               </div>
               <p style={{ fontSize:13, color:'#6b7280', lineHeight:1.8, marginBottom:6, maxWidth:300 }}>
-                India's first expert-built bank mock test platform. Freshly crafted questions every session — IBPS, SBI and RRB covered. Completely free.
+                Expert-crafted mock tests for every major competitive exam. Banking, SSC, Railway and more — completely free.
               </p>
               <p style={{ fontSize:12, color:'#374151' }}>by Anil Software Technologies</p>
             </div>
