@@ -174,7 +174,7 @@ function LandingPage({ onNav, initialTab='home' }) {
 
             <p className="fu" style={{fontSize:18,color:'#555',lineHeight:1.75,marginBottom:36,animationDelay:'.1s'}}>
               Personalised study plans, mock tests and performance insights.<br/>
-              Banking, SSC, Railway, JEE and more — <strong style={{color:'#111'}}>completely free.</strong>
+              Banking, SSC, Railway, JEE and more — <strong style={{color:'#111'}}>free for 7 days, no credit card required.</strong>
             </p>
 
             {/* Free-trial badge */}
@@ -550,7 +550,7 @@ function LandingPage({ onNav, initialTab='home' }) {
                 <p style={{fontSize:14,color:'#555',lineHeight:1.8}}>
                   Anil brings over a decade of experience building scalable software and data systems across the IT industry.
                   A Post Graduate from NIT Durgapur, he founded MockTest to bridge the gap between expensive coaching and
-                  quality preparation — delivering unlimited, exam-accurate practice for every student, completely free.
+                  quality preparation — delivering unlimited, exam-accurate practice for every student, free to start with a 7-day trial.
                   He leads the platform's product vision, architecture and overall direction.
                 </p>
               </div>
@@ -664,7 +664,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <p style={{fontSize:15,color:'#555'}}>Students who cracked their exams with MockTest</p>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:18}}>
-              {[{n:'Priya S.',e:'IBPS Clerk 2024',t:'12 tests, zero repeated questions. The adaptive difficulty pushed me from easy to hard. Cleared cut-off in first attempt.',i:'PS',c:'#FF653F'},{n:'Rahul M.',e:'SBI PO 2024',t:'The section timers made the real exam feel very familiar. The DI charts look exactly like the actual SBI screen. Best free platform.',i:'RM',c:'#059669'},{n:'Deepa K.',e:'IBPS PO Mains',t:'The PDF solution is brilliant — actual bar charts with step-by-step working. I could identify every mistake before the real exam.',i:'DK',c:'#0891B2'},{n:'Amit S.',e:'RRB PO 2023',t:'I tried Adda247 and Oliveboard. MockTest questions are harder and more varied. And it is completely free — no subscription.',i:'AS',c:'#D97706'},{n:'Neha V.',e:'SBI Clerk 2024',t:'Career Tan tips are gold. The 60-day plan kept me on track. The adaptive mode knew exactly when to push me harder.',i:'NV',c:'#7C3AED'},{n:'Kiran P.',e:'IBPS Clerk 2024',t:'The puzzle and syllogism questions are at actual IBPS level. This platform really prepares you for the hard questions.',i:'KP',c:'#059669'}].map((t,i)=>(
+              {[{n:'Priya S.',e:'IBPS Clerk 2024',t:'12 tests, zero repeated questions. The adaptive difficulty pushed me from easy to hard. Cleared cut-off in first attempt.',i:'PS',c:'#FF653F'},{n:'Rahul M.',e:'SBI PO 2024',t:'The section timers made the real exam feel very familiar. The DI charts look exactly like the actual SBI screen. Best free platform.',i:'RM',c:'#059669'},{n:'Deepa K.',e:'IBPS PO Mains',t:'The PDF solution is brilliant — actual bar charts with step-by-step working. I could identify every mistake before the real exam.',i:'DK',c:'#0891B2'},{n:'Amit S.',e:'RRB PO 2023',t:'I tried Adda247 and Oliveboard. MockTest questions are harder and more varied. It starts free — 7-day trial with full access.',i:'AS',c:'#D97706'},{n:'Neha V.',e:'SBI Clerk 2024',t:'Career Tan tips are gold. The 60-day plan kept me on track. The adaptive mode knew exactly when to push me harder.',i:'NV',c:'#7C3AED'},{n:'Kiran P.',e:'IBPS Clerk 2024',t:'The puzzle and syllogism questions are at actual IBPS level. This platform really prepares you for the hard questions.',i:'KP',c:'#059669'}].map((t,i)=>(
                 <div key={i} className="feat-card">
                   <div style={{color:'#FF653F',fontSize:15,letterSpacing:3,marginBottom:12}}>★★★★★</div>
                   <p style={{fontSize:14,color:'#444',lineHeight:1.75,marginBottom:18}}>{t.t}</p>

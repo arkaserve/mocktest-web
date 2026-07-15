@@ -84,7 +84,7 @@ export default function ComingSoonPage({ user, category, onNav }) {
         <div style={{background:'linear-gradient(135deg,#EEF0FF,#F3F0FF)',border:'1.5px solid #C5CAF0',borderRadius:16,padding:24,maxWidth:480,margin:'0 auto'}}>
           <div style={{fontSize:14,fontWeight:700,color:'#0f172a',marginBottom:6}}>🏦 Try Banking — it's fully live!</div>
           <p style={{fontSize:12,color:'#475569',lineHeight:1.6,marginBottom:14}}>
-            While we build {cat.label} exams, our Banking platform is 100% live — IBPS PO, Clerk, SBI PO, Clerk, RRB exams with expert-crafted questions. Completely free.
+            While we build {cat.label} exams, our Banking platform is 100% live — IBPS PO, Clerk, SBI PO, Clerk, RRB exams with expert-crafted questions. Free for 7 days — no credit card required.
           </p>
           <button onClick={()=>onNav('dashboard')}
             style={{width:'100%',padding:'11px 0',background:'linear-gradient(135deg,#3B5BDB,#7048E8)',color:'#fff',border:'none',borderRadius:10,fontSize:13,fontWeight:700,cursor:'pointer'}}>
