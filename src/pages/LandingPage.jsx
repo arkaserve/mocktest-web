@@ -1,4 +1,4 @@
-import { useState, memo, useRef, useEffect, useCallback } from 'react'
+import { useState, memo, useRef, useEffect } from 'react'
 import api from '../api'
 
 /* ─── DATA — outside component, created once ─── */
@@ -151,6 +151,7 @@ function LandingPage({ onNav, initialTab='home' }) {
           .feat-card{padding:20px!important}
           .exam-chip{padding:10px 14px!important}
           #exam-scroll{gap:8px!important}
+          .feat-grid-4{grid-template-columns:repeat(2,1fr)!important}
         }
       `}</style>
 
@@ -248,7 +249,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <h2 style={{fontSize:38,fontWeight:800,color:'#111',marginBottom:12,letterSpacing:'-0.5px'}}>Study Smart with <span style={{color:'#FF653F'}}>Expert-Crafted</span> Features</h2>
               <p style={{fontSize:16,color:'#666',maxWidth:520,margin:'0 auto'}}>Not a question bank. Every question is uniquely crafted — fresh, exam-accurate, zero repetition.</p>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:20}}>
+            <div className="feat-grid-4" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:20}}>
               {AI_FEATURES.map((f,i)=>(
                 <div key={i} className="feat-card">
                   <div style={{width:52,height:52,borderRadius:14,background:f.bg,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26,marginBottom:18}}>{f.icon}</div>
