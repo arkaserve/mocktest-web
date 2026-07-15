@@ -366,12 +366,12 @@ export default function AuthScreen({ onAuth, onBack }) {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={lbl}>First name <span className="text-red-500">*</span></label>
-                  <input type="text" placeholder="Anil" value={regData.firstName}
+                  <input type="text" placeholder="First name" value={regData.firstName}
                     onChange={e => setRegData(d=>({...d,firstName:e.target.value}))} className={inp}/>
                 </div>
                 <div>
                   <label className={lbl}>Last name</label>
-                  <input type="text" placeholder="Kumar" value={regData.lastName}
+                  <input type="text" placeholder="Last name" value={regData.lastName}
                     onChange={e => setRegData(d=>({...d,lastName:e.target.value}))} className={inp}/>
                 </div>
               </div>

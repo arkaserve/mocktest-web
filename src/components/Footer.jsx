@@ -59,8 +59,16 @@ const SOCIAL = [
   { Icon: IconYouTube,  label:'YouTube'  },
 ]
 
+import { useState, useEffect } from 'react'
+import api from '../api'
+
 export default function Footer({ onNav }) {
   const nav = (id) => id && onNav(id)
+  const [visitorCount, setVisitorCount] = useState(null)
+
+  useEffect(() => {
+    api.get('/visitor/count').then(r => setVisitorCount(r.data.count)).catch(() => {})
+  }, [])
 
   return (
     <footer style={{ fontFamily:"'Inter','Segoe UI',system-ui,sans-serif" }}>
@@ -199,9 +207,21 @@ export default function Footer({ onNav }) {
         {/* Copyright */}
         <div style={{ maxWidth:1280, margin:'0 auto', borderTop:'1px solid rgba(255,255,255,.06)', padding:'18px 0', marginTop:36 }}>
           <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:10 }}>
-            <span style={{ fontSize:12, color:'#374151' }}>
-              © {new Date().getFullYear()} Anil Software Technologies · mocktest.anilsofttech.com · All rights reserved
-            </span>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              <span style={{ fontSize:12, color:'#374151' }}>
+                © {new Date().getFullYear()} Anil Software Technologies · mocktest.anilsofttech.com · All rights reserved
+              </span>
+              {visitorCount !== null && (
+                <div style={{ display:'flex', alignItems:'center', gap:3 }}>
+                  {String(visitorCount).padStart(6,'0').split('').map((d,i) => (
+                    <div key={i} style={{ width:20, height:26, background:'#2d2d2d', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', border:'1px solid #3a3a3a', boxShadow:'inset 0 2px 4px rgba(0,0,0,0.5)' }}>
+                      <span style={{ fontSize:13, fontWeight:800, color:'#FF653F', fontVariantNumeric:'tabular-nums', lineHeight:1 }}>{d}</span>
+                    </div>
+                  ))}
+                  <span style={{ fontSize:11, color:'#6b7280', marginLeft:6 }}>total visitors</span>
+                </div>
+              )}
+            </div>
             <div style={{ display:'flex', gap:16 }}>
               {[['privacy','Privacy'],['terms','Terms'],['contact','Contact']].map(([id,label]) => (
                 <button key={id} onClick={() => nav(id)}

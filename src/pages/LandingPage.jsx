@@ -96,19 +96,17 @@ function LandingPage({ onNav, initialTab='home' }) {
   const [tab,          setTab]         = useState(initialTab)
   const [openTip,      setOpenTip]     = useState(null)
   const [examTab,      setExamTab]     = useState(0)
-  const [visitorCount, setVisitorCount] = useState(null)
   const pageRef = useRef(null)
   const go = (examId) => examId ? onNav('mocktest', examId) : onNav('auth')
 
   useEffect(() => {
-    // Generate or reuse a session ID for this browser session
+    // Ping visitor count on first session visit
     let sid = sessionStorage.getItem('_vsid')
     if (!sid) {
       sid = Math.random().toString(36).slice(2) + Date.now().toString(36)
       sessionStorage.setItem('_vsid', sid)
       api.post('/visitor/ping', {}, { headers: { 'x-session-id': sid } }).catch(() => {})
     }
-    api.get('/visitor/count').then(r => setVisitorCount(r.data.count)).catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -119,18 +117,6 @@ function LandingPage({ onNav, initialTab='home' }) {
   return (
     <div ref={pageRef} style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',minHeight:'100vh',color:'#1a1a1a',overflowY:'auto'}}>
 
-      {/* Fixed flip-digit visitor counter — bottom left */}
-      {visitorCount !== null && (
-        <div style={{position:'fixed',left:0,bottom:20,zIndex:999,display:'flex',flexDirection:'row',alignItems:'center',gap:8,padding:'8px 14px 8px 12px',background:'#1a1a1a',borderRadius:'0 12px 12px 0',boxShadow:'0 4px 20px rgba(0,0,0,0.35)'}}>
-          <div style={{display:'flex',flexDirection:'row',gap:3}}>
-            {String(visitorCount).padStart(6,'0').split('').map((d,i) => (
-              <div key={i} style={{width:22,height:28,background:'#2d2d2d',borderRadius:5,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid #3a3a3a',boxShadow:'inset 0 2px 4px rgba(0,0,0,0.4)'}}>
-                <span style={{fontSize:14,fontWeight:800,color:'#FF653F',fontVariantNumeric:'tabular-nums',lineHeight:1}}>{d}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -717,6 +703,7 @@ function LandingPage({ onNav, initialTab='home' }) {
           </div>
         </section>
       )}
+
 
 
     </div>
