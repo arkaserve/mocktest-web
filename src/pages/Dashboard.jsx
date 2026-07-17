@@ -61,17 +61,22 @@ export const EXAM_GROUPS = [
     id: 'lic', label: 'LIC Exams',
     color: 'from-blue-600 to-blue-700', hex: '#2563eb',
     exams: [
-      { id: 'lic_aao_pre',       name: 'AAO Prelims',       sub: '100Q · 60 min', tag: null },
-      { id: 'lic_assistant_pre', name: 'Assistant Prelims', sub: '100Q · 60 min', tag: null },
-      { id: 'lic_ado_pre',       name: 'ADO Prelims',       sub: '100Q · 60 min', tag: null },
+      { id: 'lic_aao_pre',       name: 'AAO Prelims',       sub: '100Q · 60 min',  tag: null },
+      { id: 'lic_aao_mains',     name: 'AAO Mains',         sub: '120Q · 120 min', tag: 'New', tagColor: 'bg-blue-100 text-blue-700' },
+      { id: 'lic_assistant_pre', name: 'Assistant Prelims', sub: '100Q · 60 min',  tag: null },
+      { id: 'lic_ado_pre',       name: 'ADO Prelims',       sub: '100Q · 60 min',  tag: null },
+      { id: 'lic_ado_mains',     name: 'ADO Mains',         sub: '120Q · 120 min', tag: 'New', tagColor: 'bg-blue-100 text-blue-700' },
     ],
   },
   {
     id: 'insurance', label: 'Insurance Exams',
     color: 'from-cyan-600 to-cyan-700', hex: '#0891b2',
     exams: [
+      { id: 'niacl_ao_pre',       name: 'NIACL AO Prelims',       sub: '100Q · 60 min', tag: null },
       { id: 'niacl_assistant_pre', name: 'NIACL Assistant Prelims', sub: '100Q · 60 min', tag: null },
       { id: 'nicl_ao_pre',         name: 'NICL AO Prelims',         sub: '100Q · 60 min', tag: null },
+      { id: 'uiic_ao_pre',         name: 'UIIC AO Prelims',         sub: '100Q · 60 min', tag: null },
+      { id: 'oicl_ao_pre',         name: 'OICL AO Prelims',         sub: '100Q · 60 min', tag: null },
     ],
   },
   {
@@ -137,6 +142,7 @@ const TOPIC_GROUPS = [
   { section:'Reasoning Ability',     color:'#7c3aed', topics:['Puzzles & Seating','Syllogism','Inequality','Blood Relations','Coding-Decoding','Direction Sense','Floor Puzzles','Input-Output'] },
   { section:'English Language',      color:'#0891b2', topics:['Reading Comprehension','Cloze Test','Error Detection','Para Jumbles','Fill in the Blanks','Sentence Improvement'] },
   { section:'General Awareness',     color:'#d97706', topics:['Current Affairs','Banking Awareness','RBI & Monetary Policy','Financial Terms','Government Schemes','Static GK'] },
+  { section:'Insurance Awareness',   color:'#0e7490', topics:['IRDAI & Regulations','LIC Products','Insurance Principles','Government Schemes (PMJJBY/PMSBY/PMFBY)','Health Insurance & PM-JAY','Reinsurance','Bancassurance','ULIP & Investment Plans','Insurance Terminology','Solvency & Capital Norms'] },
 ]
 
 const WEEKDAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
@@ -161,6 +167,20 @@ const CUTOFF_ID_MAP = {
   bank_clerk_prelims:'ibps_clerk_pre', bank_clerk_mains:'ibps_clerk_mains',
   bank_po_prelims:'ibps_po_pre',       bank_po_mains:'ibps_po_mains',
   sbi_clerk_prelims:'sbi_clerk_pre',   sbi_po_prelims:'sbi_po_pre',
+  // LIC
+  lic_aao_pre:'lic_aao_pre',           lic_aao_mains:'lic_aao_mains',
+  lic_assistant_pre:'lic_assistant_pre',
+  lic_ado_pre:'lic_ado_pre',           lic_ado_mains:'lic_ado_mains',
+  // General Insurance
+  niacl_ao_pre:'niacl_ao_pre',         niacl_assistant_pre:'niacl_assistant_pre',
+  nicl_ao_pre:'nicl_ao_pre',
+  uiic_ao_pre:'uiic_ao_pre',
+  oicl_ao_pre:'oicl_ao_pre',
+  // NABARD
+  nabard_gradeA_pre:'nabard_gradeA_pre', nabard_da_pre:'nabard_da_pre',
+  // India Post / PSU
+  ippb_officer:'ippb_officer',
+  coal_india_mt:'coal_india_mt',
 }
 
 /* Subscription tiers with validity — shown in Explore Exams + Subscriptions */

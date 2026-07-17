@@ -115,7 +115,7 @@ function LandingPage({ onNav, initialTab='home' }) {
   }, [tab])
 
   return (
-    <div ref={pageRef} style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',minHeight:'100vh',color:'#1a1a1a',overflowY:'auto'}}>
+    <div ref={pageRef} style={{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#111',minHeight:'100vh',color:'#1a1a1a',overflowY:'auto'}}>
 
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}

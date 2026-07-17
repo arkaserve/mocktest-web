@@ -51,14 +51,14 @@ export const EXAMS = [
     { year:2020, UR:56.0, OBC:54.0, EWS:53.0, SC:47.0, ST:40.0, PwBD:33.0 },
     { year:2019, UR:59.0, OBC:57.0, EWS:56.0, SC:50.0, ST:43.0, PwBD:36.0 },
   ]},
-  { group:'RRB', id:'rrb_clerk_pre', name:'RRB Office Assistant', level:'Prelims', total:80, rows:[
+  { group:'RRB', id:'rrb_office_assistant_prelims', name:'RRB Office Assistant', level:'Prelims', total:80, rows:[
     { year:2023, UR:70.0, OBC:68.0, EWS:67.0, SC:60.0, ST:52.0, PwBD:44.0 },
     { year:2022, UR:68.5, OBC:66.0, EWS:65.0, SC:58.0, ST:50.0, PwBD:42.0 },
     { year:2021, UR:67.0, OBC:64.5, EWS:63.5, SC:56.0, ST:48.0, PwBD:40.0 },
     { year:2020, UR:65.5, OBC:63.0, EWS:62.0, SC:54.0, ST:46.0, PwBD:38.0 },
     { year:2019, UR:69.0, OBC:67.0, EWS:66.0, SC:59.0, ST:51.0, PwBD:43.0 },
   ]},
-  { group:'RRB', id:'rrb_officer_pre', name:'RRB Officer Scale-I', level:'Prelims', total:80, rows:[
+  { group:'RRB', id:'rrb_officer_scale1_prelims', name:'RRB Officer Scale-I', level:'Prelims', total:80, rows:[
     { year:2023, UR:60.0, OBC:58.0, EWS:57.0, SC:50.0, ST:44.0, PwBD:38.0 },
     { year:2022, UR:58.5, OBC:56.0, EWS:55.0, SC:48.0, ST:42.0, PwBD:36.0 },
     { year:2021, UR:57.0, OBC:54.5, EWS:53.5, SC:46.0, ST:40.0, PwBD:34.0 },

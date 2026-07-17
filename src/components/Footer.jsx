@@ -22,16 +22,53 @@ const EXAM_CATS = [
     items: ['IBPS Clerk','IBPS PO','SBI Clerk','SBI PO','RRB Assistant','Coal India MT'],
   },
   {
-    head: 'SSC', live: false, dest: null,
-    items: ['SSC CGL','SSC CHSL','SSC MTS'],
+    head: 'RBI', live: true, dest: 'mocktest',
+    items: ['RBI Assistant','RBI Grade B'],
   },
   {
-    head: 'Railway', live: false, dest: null,
-    items: ['RRB NTPC','RRB Group D','RRB ALP'],
+    head: 'LIC', live: true, dest: 'mocktest',
+    items: ['LIC AAO','LIC ADO','LIC Assistant'],
+  },
+  {
+    head: 'NABARD', live: true, dest: 'mocktest',
+    items: ['NABARD Grade A','NABARD Dev Asst'],
+  },
+  {
+    head: 'SSC', live: true, dest: 'mocktest',
+    items: ['SSC CGL','SSC CHSL','SSC MTS'],
+    soonItems: ['SSC CPO','SSC Stenographer','SSC Selection Post'],
+  },
+  {
+    head: 'Railway', live: true, dest: 'mocktest',
+    items: ['RRB NTPC CBT1','RRB NTPC CBT2','RRB Group D','RRB ALP'],
+  },
+  {
+    head: 'Insurance', live: false, dest: null,
+    items: ['NICL AO','UIIC AO','NIACL AO','OICL AO'],
+  },
+  {
+    head: 'Defence', live: false, dest: null,
+    items: ['AFCAT','CDS','CAPF','Coast Guard AC','Indian Navy SSR','IAF X/Y Group'],
+  },
+  {
+    head: 'Police', live: false, dest: null,
+    items: ['Delhi Police SI','State Police SI','State Police Constable','CISF','CRPF','BSF','ITBP','SSB'],
   },
   {
     head: 'Government', live: false, dest: null,
-    items: ['UPSC Prelims','State PSC','NABARD'],
+    items: ['UPSC Prelims','State PSC'],
+  },
+  {
+    head: 'Teaching', live: false, dest: null,
+    items: ['DSSSB','KVS','NVS'],
+  },
+  {
+    head: 'MBA', live: false, dest: null,
+    items: ['ICET','MAT'],
+  },
+  {
+    head: 'Law', live: false, dest: null,
+    items: ['CLAT','AILET','SLAT'],
   },
   {
     head: 'Engineering', live: false, dest: null,
@@ -76,7 +113,7 @@ export default function Footer({ onNav }) {
       <style>{`
         .ft-explore-grid {
           display: grid;
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(5, 1fr);
           gap: 32px 24px;
         }
         @media(max-width:900px){
@@ -129,6 +166,11 @@ export default function Footer({ onNav }) {
                           >{label}</button>
                         : <span style={{ fontSize:12.5, color:'#4b5563' }}>{label}</span>
                       }
+                    </li>
+                  ))}
+                  {cat.soonItems?.map(label => (
+                    <li key={label} style={{ marginBottom:8 }}>
+                      <span style={{ fontSize:12.5, color:'#4b5563' }}>{label}</span>
                     </li>
                   ))}
                 </ul>
@@ -214,7 +256,7 @@ export default function Footer({ onNav }) {
               {visitorCount !== null && (
                 <div style={{ display:'flex', alignItems:'center', gap:3 }}>
                   {String(visitorCount).padStart(6,'0').split('').map((d,i) => (
-                    <div key={i} style={{ width:20, height:26, background:'#2d2d2d', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', border:'1px solid #3a3a3a', boxShadow:'inset 0 2px 4px rgba(0,0,0,0.5)' }}>
+                    <div key={i} style={{ width:20, height:26, background:'#111', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', border:'1px solid rgba(255,255,255,.08)' }}>
                       <span style={{ fontSize:13, fontWeight:800, color:'#FF653F', fontVariantNumeric:'tabular-nums', lineHeight:1 }}>{d}</span>
                     </div>
                   ))}

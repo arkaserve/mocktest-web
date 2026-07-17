@@ -12,8 +12,8 @@ const EXAM_OPTIONS = [
   { id:'bank_po_mains',      label:'IBPS PO Mains',        icon:'🏦', sub:'175Q · 180 min · 5 sections', color:'#3B5BDB', bg:'#EEF0FF', live:true  },
   { id:'sbi_clerk_prelims',  label:'SBI Clerk Prelims',    icon:'🏛', sub:'100Q · 60 min · 3 sections',  color:'#0891B2', bg:'#ECFEFF', live:true  },
   { id:'sbi_po_prelims',     label:'SBI PO Prelims',       icon:'🏛', sub:'100Q · 60 min · 3 sections',  color:'#0891B2', bg:'#ECFEFF', live:true  },
-  { id:'rrb_assistant',      label:'RRB Office Assistant', icon:'🚂', sub:'80Q · 45 min',                color:'#16A34A', bg:'#DCFCE7', live:true  },
-  { id:'rrb_officer_scale1', label:'RRB Officer Scale-I',  icon:'🚂', sub:'80Q · 45 min',                color:'#16A34A', bg:'#DCFCE7', live:true  },
+  { id:'rrb_office_assistant_prelims', label:'RRB Office Assistant', icon:'🚂', sub:'80Q · 45 min · 2 sections', color:'#16A34A', bg:'#DCFCE7', live:true  },
+  { id:'rrb_officer_scale1_prelims',  label:'RRB Officer Scale-I',  icon:'🚂', sub:'80Q · 45 min · 2 sections', color:'#16A34A', bg:'#DCFCE7', live:true  },
   { id:'ssc_cgl_tier1',      label:'SSC CGL Tier I',       icon:'📋', sub:'100Q · 60 min · 4 sections',   color:'#7C3AED', bg:'#F5F3FF', live:true  },
   { id:'jee_mains',          label:'JEE Mains',            icon:'⚙',  sub:'Coming soon',                  color:'#94A3B8', bg:'#F1F5F9', live:false },
 ]
