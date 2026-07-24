@@ -178,31 +178,53 @@ function ShortcutBody({ q }) {
   }
   const sc = e.shortcut
   return (
-    <div className="text-[15px] text-gray-700 leading-relaxed">
+    <div className="text-[15px] text-gray-700 leading-relaxed space-y-4">
       {sc.title && (
-        <p className="font-bold mb-3" style={{ color: '#CC3D00' }}>
-          {sc.title}
-        </p>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-bold"
+          style={{ background: '#FFF3EE', color: '#FF653F', border: '1px solid #fec9b0' }}>
+          ⚡ {sc.title}
+        </div>
       )}
+
       {Array.isArray(sc.steps) && sc.steps.length > 0 && (
-        <>
-          <ExplSection label="Steps" />
-          <ol className="space-y-1.5 list-decimal list-inside">
+        <div>
+          <ExplSection label="Quick Steps" />
+          <ol className="space-y-2.5 mt-1">
             {sc.steps.map((s, i) => (
-              <li key={i} className="text-gray-700">
-                <MathText text={typeof s === 'string' ? s : (s.value || String(s))} />
+              <li key={i} className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: '#FF653F' }}>{i + 1}</span>
+                <span className="text-gray-700 leading-relaxed">
+                  <MathText text={typeof s === 'string' ? s : (s.value || String(s))} />
+                </span>
               </li>
             ))}
           </ol>
-        </>
+        </div>
       )}
+
+      {sc.vs_standard && (
+        <div className="rounded-xl px-4 py-3 mt-1"
+          style={{ background: '#F0F9FF', border: '1px solid #BFDBFE' }}>
+          <div className="text-[11px] font-bold uppercase tracking-widest mb-1.5 text-blue-600">
+            vs Standard Method
+          </div>
+          <p className="text-sm text-blue-900 leading-relaxed">
+            <MathText text={sc.vs_standard} />
+          </p>
+        </div>
+      )}
+
       {sc.tip && (
-        <>
-          <ExplSection label="Exam Tip" />
-          <p className="text-gray-600 italic">
+        <div className="rounded-xl px-4 py-3"
+          style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+          <div className="text-[11px] font-bold uppercase tracking-widest mb-1.5 text-amber-700">
+            Exam Tip
+          </div>
+          <p className="text-sm text-amber-900 italic leading-relaxed">
             <MathText text={sc.tip} />
           </p>
-        </>
+        </div>
       )}
     </div>
   )
@@ -367,17 +389,16 @@ function ExplanationBody({ q }) {
         {steps.length > 0 && (
           <>
             <ExplSection label="Solution" />
-            <div className="space-y-1">
+            <div className="rounded-xl overflow-hidden border border-gray-100 mt-1">
               {steps.map((s, i) => {
-                const label = typeof s === 'string' ? null  : (s.label || null)
-                const value = typeof s === 'string' ? s     : (s.value || s.text || '')
+                const label = typeof s === 'string' ? null : (s.label || null)
+                const value = typeof s === 'string' ? s    : (s.value || s.text || '')
                 return (
-                  <p key={i} className="text-gray-700">
-                    {label && <span className="text-gray-400">{label}: </span>}
-                    <span className="font-semibold" style={{ color: '#333' }}>
-                      <MathText text={value} />
-                    </span>
-                  </p>
+                  <div key={i}
+                    className="px-3.5 py-2 border-b border-gray-50 last:border-0 text-gray-800 font-semibold"
+                    style={{ background: i % 2 === 0 ? '#FAFAFA' : '#FFFFFF' }}>
+                    <MathText text={value} />
+                  </div>
                 )
               })}
             </div>
@@ -1466,7 +1487,25 @@ export default function ResultScreen({ result, studentName, onRetry, onHome, onS
                   </Card>
 
                   {/* RIGHT — the explanation */}
-                  <Card title="Explanation" icon="💡">
+                  <Card title="Explanation" icon="💡" badge={
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => { setExpIdx(Math.max(0, expIdx - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        disabled={expIdx === 0}
+                        className="px-2 py-1 rounded-lg text-xs font-bold border transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        style={{ borderColor: '#FF653F', color: '#FF653F' }}>
+                        ← Prev
+                      </button>
+                      <span className="text-xs text-gray-400 font-medium">{expIdx + 1}/{qResults.length}</span>
+                      <button
+                        onClick={() => { setExpIdx(Math.min(qResults.length - 1, expIdx + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        disabled={expIdx === qResults.length - 1}
+                        className="px-2 py-1 rounded-lg text-xs font-bold border transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white"
+                        style={{ background: '#FF653F', borderColor: '#FF653F' }}>
+                        Next →
+                      </button>
+                    </div>
+                  }>
                     <SeatingDiagram meta={q.metadata} />
                     <ExplanationWithTabs q={q} />
                   </Card>

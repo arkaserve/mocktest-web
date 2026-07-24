@@ -121,21 +121,21 @@ export const submitTest = (testId, answers, timeSpent) =>
     }).then(r => r.data)
   )
 
+export const generateTopicTest = (section, topic, count = 15, student_id = null) =>
+  api.post('/tests/topic', {
+    exam: 'bank_clerk_prelims',
+    section,
+    topic,
+    count,
+    ...(student_id ? { student_id } : {})
+  }).then(r => r.data)
+
 export const generateMiniTest = (section, topic, count = 10, difficulty = 'mixed', student_id = null) =>
   api.post('/tests/mini', {
     exam: 'bank_clerk_prelims',
     section,
     topic,
     difficulty,
-    count,
-    ...(student_id ? { student_id } : {})
-  }).then(r => r.data)
-
-export const generateTopicTest = (section, topic, count = 10, student_id = null) =>
-  api.post('/tests/topic', {
-    exam: 'bank_clerk_prelims',
-    section,
-    topic,
     count,
     ...(student_id ? { student_id } : {})
   }).then(r => r.data)
@@ -160,6 +160,26 @@ export const syncSubscriptions = (userId) =>
 // ── Exam blueprint (pattern + topic-wise weightage) ───────────────────
 export const getExamBlueprint = (examId) =>
   api.get(`/exams/${examId}/blueprint`).then(r => r.data)
+
+// ── Concept-level drill (P&L pilot) ──────────────────────────────────
+export const generateConceptMini = (conceptCode, difficulty = 'easy', count = 5, student_id = null) =>
+  api.post('/tests/concept-mini', {
+    concept_code: conceptCode,
+    difficulty,
+    count,
+    ...(student_id ? { student_id } : {})
+  }).then(r => r.data)
+
+export const getPLConcepts = (student_id = null) =>
+  api.get('/concepts/profit-loss', { params: student_id ? { student_id } : {} }).then(r => r.data)
+
+// Generic concept catalogue — topic: 'percentage' | 'time_work' | 'time_speed_distance' | 'average' | 'mixture_alligation'
+export const getTopicConcepts = (topic, student_id = null) =>
+  api.get(`/concepts/${topic}`, { params: student_id ? { student_id } : {} }).then(r => r.data)
+
+// Formula sheet + shortcut for a topic — back-fills old saved results that pre-date these fields
+export const getTopicFormulas = (topic) =>
+  api.get(`/formulas/${topic}`).then(r => r.data)
 
 export { getFriendlyMessage }
 export default api

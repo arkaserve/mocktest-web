@@ -72,14 +72,15 @@ export default function PaymentComingSoon({ plan = 'intermediate', onBack }) {
         </button>
       </div>
 
+      {/* Card area */}
       <style>{`
         @media(max-width:480px){
-          .pcs-card{padding:28px 20px!important}
+          .pcs-card{padding:28px 20px!important;margin:0!important}
           .pcs-notify-row{flex-direction:column!important}
-          .pcs-notify-row input,.pcs-notify-row button{border-radius:9px!important;width:100%}
+          .pcs-notify-row input{border-radius:9px!important}
+          .pcs-notify-row button{border-radius:9px!important;width:100%}
         }
       `}</style>
-      {/* Card area */}
       <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 16px'}}>
 
       {/* Card */}
