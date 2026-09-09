@@ -194,7 +194,7 @@ const BADGE = { Clerk:'bg-indigo-100 text-indigo-700', PO:'bg-purple-100 text-pu
 const LEVEL = { Prelims:'bg-sky-100 text-sky-700', Mains:'bg-amber-100 text-amber-700', Main:'bg-amber-100 text-amber-700' }
 
 // Exams always visible to all users (free or paid) regardless of registration
-const FREE_OPEN_EXAMS = new Set(['ap_eamcet_engg', 'ts_eamcet_engg'])
+const FREE_OPEN_EXAMS = new Set(['ap_eamcet_engg', 'ts_eamcet_engg', 'jee_mains', 'jee_advanced_p1', 'jee_advanced_p2'])
 
 // ── Tab: Full Mock ────────────────────────────────────────────
 function FullMockTab({ studentName, onStart, initialExamId = '', registeredExamIds = [], isPro = false }) {
