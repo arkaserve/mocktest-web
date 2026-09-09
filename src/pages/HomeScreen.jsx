@@ -23,6 +23,10 @@ const SEC_COLOR = {
   general_financial_awareness:'text-blue-700 bg-blue-50 border-blue-200',
   general_economy_banking:'text-blue-700 bg-blue-50 border-blue-200',
   general_knowledge:'text-blue-700 bg-blue-50 border-blue-200',
+  // Engineering / EAMCET sections
+  mathematics:'text-indigo-700 bg-indigo-50 border-indigo-200',
+  physics:'text-sky-700 bg-sky-50 border-sky-200',
+  chemistry:'text-teal-700 bg-teal-50 border-teal-200',
   // SSC sections
   general_intelligence_reasoning:'text-violet-700 bg-violet-50 border-violet-200',
   general_intelligence:'text-violet-700 bg-violet-50 border-violet-200',
@@ -41,6 +45,10 @@ const SEC_LABEL = {
   general_financial_awareness:'General / Financial Awareness',
   general_economy_banking:'General Economy & Banking',
   general_knowledge:'General Knowledge',
+  // Engineering / EAMCET sections
+  mathematics:'Mathematics',
+  physics:'Physics',
+  chemistry:'Chemistry',
   // SSC sections
   general_intelligence_reasoning:'General Intelligence & Reasoning',
   general_intelligence:'General Intelligence',
@@ -112,6 +120,15 @@ const EXAM_TREE = [
     { id:'rrb_group_d',   name:'RRB Group D',    badge:'Grp D', level:'CBT',  questions:100, duration:'90 min', negative:0.33, sections:['mathematics','general_intelligence_reasoning','general_science','general_awareness'], pattern:{mathematics:25,general_intelligence_reasoning:30,general_science:25,general_awareness:20} },
     { id:'rrb_alp_cbt1',  name:'RRB ALP CBT 1',  badge:'ALP',  level:'CBT 1', questions:75, duration:'60 min', negative:0.33, sections:['mathematics','general_intelligence_reasoning','general_science'], pattern:{mathematics:20,general_intelligence_reasoning:25,general_science:30} },
   ]},
+  { bank:'EAMCET', exams:[
+    { id:'ap_eamcet_engg', name:'AP EAMCET Engineering', badge:'AP', level:'Entrance', questions:160, duration:'180 min', negative:0, sections:['mathematics','physics','chemistry'], pattern:{mathematics:80,physics:40,chemistry:40} },
+    { id:'ts_eamcet_engg', name:'TS EAMCET Engineering', badge:'TS', level:'Entrance', questions:160, duration:'180 min', negative:0, sections:['mathematics','physics','chemistry'], pattern:{mathematics:80,physics:40,chemistry:40} },
+  ]},
+  { bank:'JEE', exams:[
+    { id:'jee_mains', name:'JEE Main', badge:'Mains', level:'Entrance', questions:90, duration:'180 min', negative:1, sections:['mathematics','physics','chemistry'], pattern:{mathematics:30,physics:30,chemistry:30} },
+    { id:'jee_advanced_p1', name:'JEE Advanced Paper 1', badge:'Adv P1', level:'Advanced', questions:54, duration:'180 min', negative:2, sections:['mathematics','physics','chemistry'], pattern:{mathematics:18,physics:18,chemistry:18} },
+    { id:'jee_advanced_p2', name:'JEE Advanced Paper 2', badge:'Adv P2', level:'Advanced', questions:54, duration:'180 min', negative:2, sections:['mathematics','physics','chemistry'], pattern:{mathematics:18,physics:18,chemistry:18} },
+  ]},
 ]
 
 const ALL_EXAMS = EXAM_TREE.flatMap(g => g.exams)
@@ -176,14 +193,18 @@ const TOPICS = [
 const BADGE = { Clerk:'bg-indigo-100 text-indigo-700', PO:'bg-purple-100 text-purple-700', MT:'bg-green-100 text-green-700' }
 const LEVEL = { Prelims:'bg-sky-100 text-sky-700', Mains:'bg-amber-100 text-amber-700', Main:'bg-amber-100 text-amber-700' }
 
+// Exams always visible to all users (free or paid) regardless of registration
+const FREE_OPEN_EXAMS = new Set(['ap_eamcet_engg', 'ts_eamcet_engg'])
+
 // ── Tab: Full Mock ────────────────────────────────────────────
 function FullMockTab({ studentName, onStart, initialExamId = '', registeredExamIds = [], isPro = false }) {
   // Restrict the tree to the exams the user registered for (free users).
+  // FREE_OPEN_EXAMS are always shown to everyone for testing.
   const hasReg = registeredExamIds.length > 0
   const visibleTree = (isPro || !hasReg)
     ? EXAM_TREE
     : EXAM_TREE
-        .map(g => ({ ...g, exams: g.exams.filter(e => registeredExamIds.includes(e.id)) }))
+        .map(g => ({ ...g, exams: g.exams.filter(e => registeredExamIds.includes(e.id) || FREE_OPEN_EXAMS.has(e.id)) }))
         .filter(g => g.exams.length > 0)
   const tree = visibleTree.length ? visibleTree : EXAM_TREE   // safety fallback
 

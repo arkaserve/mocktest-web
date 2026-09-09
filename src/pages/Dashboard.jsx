@@ -93,6 +93,14 @@ export const EXAM_GROUPS = [
       { id: 'coal_india_mt', name: 'Coal India MT', sub: '100Q · 120 min', tag: 'New', tagColor: 'bg-emerald-100 text-emerald-700' },
     ],
   },
+  {
+    id: 'eamcet', label: 'EAMCET Exams',
+    color: 'from-violet-600 to-violet-700', hex: '#7c3aed',
+    exams: [
+      { id: 'ap_eamcet_engg', name: 'AP EAMCET Engineering', sub: '160Q · 180 min', tag: 'New', tagColor: 'bg-violet-100 text-violet-700' },
+      { id: 'ts_eamcet_engg', name: 'TS EAMCET Engineering', sub: '160Q · 180 min', tag: 'New', tagColor: 'bg-violet-100 text-violet-700' },
+    ],
+  },
 ]
 
 const CATEGORIES = [
@@ -669,9 +677,10 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
     || !!user?.user_metadata?.target_exam
     || (Array.isArray(user?.user_metadata?.selected_exams) && user.user_metadata.selected_exams.length > 0)
     || history.length > 0
+  const FREE_OPEN_IDS = new Set(['ap_eamcet_engg', 'ts_eamcet_engg'])
   const visibleGroupExams = isPro
     ? selectedGroup.exams
-    : selectedGroup.exams.filter(e => registeredExamIds.includes(e.id) || e.id === selectedExamId)
+    : selectedGroup.exams.filter(e => registeredExamIds.includes(e.id) || e.id === selectedExamId || FREE_OPEN_IDS.has(e.id))
   const examBest    = examResults.length ? Math.max(...examResults.map(r => r.percentage || 0)) : null
   const examAvg     = examResults.length ? (examResults.reduce((s,r)=>s+(r.percentage||0),0)/examResults.length) : null
   const lastAttempt = examResults[0] || null

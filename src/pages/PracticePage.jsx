@@ -24,7 +24,14 @@ const EXAM_GROUPS = [
   { id:'psu', label:'PSU Exams', color:'#374151', exams:[
     { id:'coal_india_mt', name:'Coal India MT', meta:'100Q · 120 min', tag:'New' },
   ]},
+  { id:'eamcet', label:'EAMCET Exams', color:'#7c3aed', exams:[
+    { id:'ap_eamcet_engg', name:'AP EAMCET Engineering', meta:'160Q · 180 min', tag:'New' },
+    { id:'ts_eamcet_engg', name:'TS EAMCET Engineering', meta:'160Q · 180 min', tag:'New' },
+  ]},
 ]
+
+// Always visible to all users regardless of registration
+const FREE_OPEN_EXAM_IDS = new Set(['ap_eamcet_engg', 'ts_eamcet_engg'])
 
 const TOPICS = [
   { section:'Quantitative Aptitude', color:'text-orange-700', bg:'bg-orange-50', border:'border-orange-200', items:[
@@ -125,7 +132,7 @@ export default function PracticePage({ user, onStartTest, onLogout, onNav }) {
   const visibleGroups = (isPro || !hasReg)
     ? EXAM_GROUPS
     : EXAM_GROUPS
-        .map(g => ({ ...g, exams: g.exams.filter(e => registeredExamIds.includes(e.id)) }))
+        .map(g => ({ ...g, exams: g.exams.filter(e => registeredExamIds.includes(e.id) || FREE_OPEN_EXAM_IDS.has(e.id)) }))
         .filter(g => g.exams.length > 0)
 
   function handleNav(id) {

@@ -15,7 +15,9 @@ const EXAM_OPTIONS = [
   { id:'rrb_office_assistant_prelims', label:'RRB Office Assistant', icon:'🚂', sub:'80Q · 45 min · 2 sections', color:'#16A34A', bg:'#DCFCE7', live:true  },
   { id:'rrb_officer_scale1_prelims',  label:'RRB Officer Scale-I',  icon:'🚂', sub:'80Q · 45 min · 2 sections', color:'#16A34A', bg:'#DCFCE7', live:true  },
   { id:'ssc_cgl_tier1',      label:'SSC CGL Tier I',       icon:'📋', sub:'100Q · 60 min · 4 sections',   color:'#7C3AED', bg:'#F5F3FF', live:true  },
-  { id:'jee_mains',          label:'JEE Mains',            icon:'⚙',  sub:'Coming soon',                  color:'#94A3B8', bg:'#F1F5F9', live:false },
+  { id:'ap_eamcet_engg',     label:'AP EAMCET Engineering', icon:'🔬', sub:'160Q · 180 min · 3 sections',  color:'#7C3AED', bg:'#F5F3FF', live:true  },
+  { id:'ts_eamcet_engg',     label:'TS EAMCET Engineering', icon:'🔬', sub:'160Q · 180 min · 3 sections',  color:'#7C3AED', bg:'#F5F3FF', live:true  },
+  { id:'jee_mains',          label:'JEE Mains',             icon:'⚙',  sub:'Coming soon',                  color:'#94A3B8', bg:'#F1F5F9', live:false },
 ]
 
 const LEVELS = [

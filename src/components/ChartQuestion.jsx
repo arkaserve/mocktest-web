@@ -34,7 +34,7 @@ export default function ChartQuestion({ question }) {
           <BarChart data={chart_data}
             margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" label={{ value: chart_x_label, position: "insideBottom", offset: -5 }} />
+            <XAxis dataKey="name" />
             <YAxis label={{ value: chart_y_label, angle: -90, position: "insideLeft" }} />
             <Tooltip />
             <Bar dataKey="value" fill="#4f46e5" radius={[4,4,0,0]} />
@@ -48,7 +48,7 @@ export default function ChartQuestion({ question }) {
           <LineChart data={chart_data}
             margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" label={{ value: chart_x_label, position: "insideBottom", offset: -5 }} />
+            <XAxis dataKey="name" />
             <YAxis label={{ value: chart_y_label, angle: -90, position: "insideLeft" }} />
             <Tooltip />
             <Line type="monotone" dataKey="value"
