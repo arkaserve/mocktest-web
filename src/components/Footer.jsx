@@ -81,7 +81,9 @@ const EXAM_CATS = [
 ]
 
 const COMPANY_LINKS = [
-  ['About Us','about'],['Contact','contact'],['Courses','courses'],
+  ['About Us', null, 'https://arkaserve.com/#about'],
+  ['Careers',  null, 'https://arkaserve.com/careers'],
+  ['Contact','contact'],['Courses','courses'],
   ['Privacy Policy','privacy'],['Terms of Use','terms'],
 ]
 
@@ -201,13 +203,21 @@ export default function Footer({ onNav }) {
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:14 }}>Company</div>
               <ul style={{ listStyle:'none', padding:0, margin:0 }}>
-                {COMPANY_LINKS.map(([label, dest]) => (
+                {COMPANY_LINKS.map(([label, dest, href]) => (
                   <li key={label} style={{ marginBottom:10 }}>
-                    <button onClick={() => nav(dest)}
-                      style={{ background:'none', border:'none', padding:0, fontSize:13, color:'#6b7280', cursor:'pointer', transition:'color .12s', textAlign:'left' }}
-                      onMouseOver={e => e.currentTarget.style.color='#FF653F'}
-                      onMouseOut={e => e.currentTarget.style.color='#6b7280'}
-                    >{label}</button>
+                    {href ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize:13, color:'#6b7280', textDecoration:'none', transition:'color .12s' }}
+                        onMouseOver={e => e.currentTarget.style.color='#FF653F'}
+                        onMouseOut={e => e.currentTarget.style.color='#6b7280'}
+                      >{label}</a>
+                    ) : (
+                      <button onClick={() => nav(dest)}
+                        style={{ background:'none', border:'none', padding:0, fontSize:13, color:'#6b7280', cursor:'pointer', transition:'color .12s', textAlign:'left' }}
+                        onMouseOver={e => e.currentTarget.style.color='#FF653F'}
+                        onMouseOut={e => e.currentTarget.style.color='#6b7280'}
+                      >{label}</button>
+                    )}
                   </li>
                 ))}
               </ul>
