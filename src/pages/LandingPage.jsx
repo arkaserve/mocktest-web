@@ -1,5 +1,6 @@
 import { useState, memo, useRef, useEffect } from 'react'
 import api from '../api'
+import VisitorCounter from '../components/VisitorCounter'
 
 /* ─── DATA — outside component, created once ─── */
 const ALL_EXAMS = [
@@ -704,7 +705,10 @@ function LandingPage({ onNav, initialTab='home' }) {
         </section>
       )}
 
-
+      {/* ── Visitor counter ── */}
+      <section style={{ padding: '32px 24px 48px', textAlign: 'center' }}>
+        <VisitorCounter />
+      </section>
 
     </div>
   )
