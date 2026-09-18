@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react'
 import { supabase }        from './supabase.js'
+import { useSEO }          from './useSEO.js'
 
 import { handleCheckoutReturn } from './payments.js'
 import { checkHealth, syncSubscriptions } from './api.js'
@@ -23,6 +24,7 @@ const ExamsPage          = lazy(() => import('./pages/ExamsPage.jsx'))
 const AuthScreen         = lazy(() => import('./pages/AuthScreen.jsx'))
 const ResetPasswordPage  = lazy(() => import('./pages/ResetPasswordPage.jsx'))
 const AdminPage          = lazy(() => import('./pages/AdminPage.jsx'))
+const NotFoundPage       = lazy(() => import('./pages/NotFoundPage.jsx'))
 const Dashboard          = lazy(() => import('./pages/Dashboard.jsx'))
 const PracticePage       = lazy(() => import('./pages/PracticePage.jsx'))
 const PredictionExplainer= lazy(() => import('./pages/PredictionExplainer.jsx'))
@@ -40,6 +42,7 @@ const IDLE_WARNING  = 60 * 1000
 
 export default function App() {
   const [page,        setPage]        = useState('home')
+  useSEO(page)
   const [user,        setUser]        = useState(null)
   const [testData,    setTestData]    = useState(null)
   const [resultData,  setResultData]  = useState(null)
@@ -475,6 +478,12 @@ export default function App() {
         )}
         {page === 'admin'          && <AdminPage onBack={() => setPage('dashboard')} />}
 		{page === 'how-prediction-works' && <PredictionExplainer />}
+        {![
+          ...LANDING_TABS,
+          'courses','contact','privacy','terms','cutoffs','papers','exams',
+          'auth','reset-password','payment','dashboard','examhome','exam',
+          'result','admin','how-prediction-works',
+        ].includes(page) && <NotFoundPage onNav={nav} />}
         </Suspense>
       </main>
 

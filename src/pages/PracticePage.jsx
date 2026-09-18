@@ -161,7 +161,7 @@ export default function PracticePage({ user, onStartTest, onLogout, onNav }) {
           </div>
           <div className="hidden sm:block leading-none">
             <div className="text-white font-bold text-sm">MockTest</div>
-            <div className="text-xs" style={{color:'#888'}}>by Anil Software Technologies</div>
+            <div className="text-xs" style={{color:'#888'}}>by Arkaserve</div>
           </div>
         </div>
         <div className="flex-1" />

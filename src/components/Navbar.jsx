@@ -4,7 +4,7 @@ export default function Navbar({ currentPage, onNav, user, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const navItems = [
-    { id: 'about',   label: 'About Us', href: 'https://arkaserve.com/#about' },
+    { id: 'about',   label: 'About Us'        },
     { id: 'home',    label: 'Home'            },
     { id: 'success', label: 'Success Stories' },
     // { id: 'career',  label: 'Career'          }, // hidden — no open roles currently
@@ -26,28 +26,14 @@ export default function Navbar({ currentPage, onNav, user, onLogout }) {
           </div>
           <div className="text-left">
             <div className="font-bold text-white text-sm leading-none">MockTest</div>
-            <div className="text-xs" style={{ color:'#FF653F' }}>by anilsofttech.com</div>
+            <div className="text-xs" style={{ color:'#FF653F' }}>by arkaserve.com</div>
           </div>
         </button>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-0.5 flex-wrap justify-center flex-1">
           {navItems.map(item => {
-            const isActive = currentPage === item.id
-            if (item.href) return (
-              <a
-                key={item.id}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap"
-                style={{ color:'#ffffff', textDecoration:'none' }}
-                onMouseOver={e => { e.currentTarget.style.background='rgba(255,255,255,.12)' }}
-                onMouseOut={e => { e.currentTarget.style.background='transparent' }}
-              >
-                {item.icon && <span className="mr-1.5">{item.icon}</span>}{item.label}
-              </a>
-            )
+            const isActive   = currentPage === item.id
             return (
               <button
                 key={item.id}
@@ -129,30 +115,16 @@ export default function Navbar({ currentPage, onNav, user, onLogout }) {
       {menuOpen && (
         <div className="md:hidden relative z-50 px-4 py-3 space-y-1" style={{ background:'#111', borderTop:'1px solid rgba(255,255,255,.1)' }}>
           {navItems.map(item => (
-            item.href ? (
-              <a
-                key={item.id}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMenuOpen(false)}
-                className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                style={{ display:'block', color:'#ffffff', textDecoration:'none' }}
-              >
-                {item.icon && <span className="mr-1.5">{item.icon}</span>}{item.label}
-              </a>
-            ) : (
-              <button
-                key={item.id}
-                onClick={() => { onNav(item.id); setMenuOpen(false) }}
-                className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                style={currentPage === item.id
-                  ? { background:'rgba(255,255,255,.16)', color:'#ffffff' }
-                  : { color:'#ffffff' }}
-              >
-                {item.icon && <span className="mr-1.5">{item.icon}</span>}{item.label}
-              </button>
-            )
+            <button
+              key={item.id}
+              onClick={() => { onNav(item.id); setMenuOpen(false) }}
+              className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+              style={currentPage === item.id
+                ? { background:'rgba(255,255,255,.16)', color:'#ffffff' }
+                : { color:'#ffffff' }}
+            >
+              {item.icon && <span className="mr-1.5">{item.icon}</span>}{item.label}
+            </button>
           ))}
           {user ? (
             <div className="mt-2 space-y-1">

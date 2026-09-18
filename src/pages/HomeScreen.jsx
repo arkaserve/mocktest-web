@@ -568,7 +568,7 @@ export default function HomeScreen({ studentName, onStart, onBack, onNav, onLogo
           </div>
           <div className="hidden sm:block leading-none">
             <div className="text-base font-black text-white tracking-tight">MockTest</div>
-            <div className="text-xs" style={{color:'#888'}}>by Anil Software Technologies</div>
+            <div className="text-xs" style={{color:'#888'}}>by Arkaserve</div>
           </div>
         </div>
         <div className="flex-1" />

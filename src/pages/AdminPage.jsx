@@ -245,7 +245,7 @@ export default function AdminPage({ onBack }) {
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-xs font-bold">A</div>
           <div>
             <div className="font-bold text-sm">MockTest — Admin Panel</div>
-            <div className="text-gray-400 text-xs">anilsofttech.com · Internal only</div>
+            <div className="text-gray-400 text-xs">arkaserve.com · Internal only</div>
           </div>
         </div>
         <button onClick={onBack} className="text-gray-400 hover:text-white text-sm transition-colors">

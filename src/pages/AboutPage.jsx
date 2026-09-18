@@ -14,7 +14,7 @@ export default function AboutPage({ onNav }) {
   const facts = [
     {label:'Founded', value:'2022'},
     {label:'Location', value:'India'},
-    {label:'Website', value:'anilsofttech.com'},
+    {label:'Website', value:'arkaserve.com'},
     {label:'Focus', value:'Exam Prep + Skill Courses'},
   ]
 
@@ -30,7 +30,7 @@ export default function AboutPage({ onNav }) {
       {/* Hero */}
       <section style={{background:'#111',padding:'64px 32px'}}>
         <div style={{...S.inner720,textAlign:'center'}}>
-          <h1 style={S.h1}>About Anil Software Technologies</h1>
+          <h1 style={S.h1}>About Arkaserve</h1>
           <p style={{fontSize:16,color:'rgba(255,255,255,.6)',lineHeight:1.6}}>
             Bridging complex technology and the people who need it most — since 2022.
           </p>

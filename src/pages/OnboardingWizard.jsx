@@ -298,7 +298,7 @@ export default function OnboardingWizard({ user, onDone, onSkip, onRouteToPaymen
           <div style={{width:34,height:34,background:'#FF653F',borderRadius:9,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:12,fontWeight:800}}>MT</div>
           <div>
             <div style={{fontSize:15,fontWeight:800,color:'#fff',lineHeight:1.1}}>MockTest</div>
-            <div style={{fontSize:10,color:'#888'}}>by Anil Software Technologies</div>
+            <div style={{fontSize:10,color:'#888'}}>by Arkaserve</div>
           </div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:16}}>

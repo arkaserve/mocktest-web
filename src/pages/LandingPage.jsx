@@ -489,7 +489,7 @@ function LandingPage({ onNav, initialTab='home' }) {
               <h2 style={{fontSize:44,fontWeight:800,color:'#111',lineHeight:1.15,letterSpacing:'-1px'}}>
                 Study Coach for <span style={{color:'#FF653F'}}>Every Competitive Exam Goal</span>
               </h2>
-              <p style={{fontSize:15,color:'#888',marginTop:14}}>India's first fully expert-crafted competitive exam platform · by Anil Software Technologies</p>
+              <p style={{fontSize:15,color:'#888',marginTop:14}}>India's first fully expert-crafted competitive exam platform · by Arkaserve</p>
             </div>
 
             {/* Two columns spread to the edges */}

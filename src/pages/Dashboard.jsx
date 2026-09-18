@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { supabase } from '../supabase.js'
 import { startCheckout } from '../payments.js'
 import { toast } from '../toast.js'
 import { getExamBlueprint } from '../api.js'
 import { EXAMS as CUTOFF_EXAMS } from './CutoffsPage.jsx'
+const QuestionScanner = lazy(() => import('./QuestionScanner.jsx'))
 import {
   LineChart, Line, BarChart, Bar, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, XAxis, YAxis, CartesianGrid,
@@ -127,6 +128,7 @@ const SvgClip   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="no
 const SvgUser   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="10" cy="6" r="4"/><path d="M2 18c0-4 3.6-7 8-7s8 3 8 7"/></svg>
 const SvgCard   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M2 9h16"/></svg>
 const SvgGear   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="10" cy="10" r="3"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"/></svg>
+const SvgScan   = () => <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="4" width="16" height="12" rx="2"/><circle cx="10" cy="10" r="2.5"/><path d="M6 2v2M14 2v2M6 16v2M14 16v2"/></svg>
 
 const MODES = [
   { id:'mock',    label:'Full Mock Test',  desc:'100Q · all sections · -0.25 · PDF result',    Icon:SvgDoc,    bg:'bg-blue-600',    light:'bg-blue-50',    text:'text-blue-700',    border:'border-blue-200'    },
@@ -137,6 +139,7 @@ const MODES = [
 const SIDEBAR_NAV = [
   { id:'home',          Icon:SvgHome,  label:'Dashboard'     },
   { id:'explore',       Icon:SvgDoc,   label:'Explore Exams' },
+  { id:'scanner',       Icon:SvgScan,  label:'Question Scanner', badge:'New' },
   { id:'studyplan',     Icon:SvgCal,   label:'Study Planner' },
   { id:'results',       Icon:SvgChart, label:'My Results'    },
   { id:'subscriptions', Icon:SvgClip,  label:'Subscriptions' },
@@ -930,7 +933,7 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
           </div>
           <div className="hidden sm:block leading-none">
             <div className="text-base font-black text-white tracking-tight">MockTest</div>
-            <div className="text-xs" style={{ color:'#888' }}>by Anil Software Technologies</div>
+            <div className="text-xs" style={{ color:'#888' }}>by Arkaserve</div>
           </div>
         </div>
         <div className="flex-1"/>
@@ -993,6 +996,9 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                 style={activeTab === item.id ? { background:'#FF653F' } : {}}>
                 <span className="flex-shrink-0"><item.Icon /></span>
                 {item.label}
+                {item.badge && activeTab !== item.id && (
+                  <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background:'#FF653F' }}>{item.badge}</span>
+                )}
                 {activeTab === item.id && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/70"/>}
               </button>
             ))}
@@ -2449,6 +2455,17 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
               )
             })()}
 
+            {/* ── QUESTION SCANNER tab ── */}
+            {activeTab === 'scanner' && (
+              <Suspense fallback={
+                <div className="flex items-center justify-center py-24">
+                  <div className="w-7 h-7 border-4 rounded-full animate-spin" style={{ borderColor:'#fed7c2', borderTopColor:'#FF653F' }}/>
+                </div>
+              }>
+                <QuestionScanner onStartTest={onStartTest} />
+              </Suspense>
+            )}
+
             {/* ── SETTINGS tab ── */}
             {activeTab === 'settings' && (
               <div className="max-w-lg">
@@ -2492,7 +2509,7 @@ export default function Dashboard({ user, planData, onStartTest, onLogout, onNav
                 </div>
                 <div>
                   <div className="text-white font-bold text-sm">MockTest</div>
-                  <div className="text-xs" style={{ color:'#888' }}>by Anil Software Technologies</div>
+                  <div className="text-xs" style={{ color:'#888' }}>by Arkaserve</div>
                 </div>
               </div>
               <button onClick={()=>setPanelOpen(false)} className="text-white/70 hover:text-white text-2xl w-8 h-8 flex items-center justify-center">×</button>

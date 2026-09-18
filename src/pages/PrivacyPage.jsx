@@ -2,7 +2,7 @@ export default function PrivacyPage() {
   const updated='25 May 2026'
   const S={page:{fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",background:'#fff',color:'#111'},inner:{maxWidth:760,margin:'0 auto',padding:'0 24px'}}
   const sections=[
-    {title:'1. Who we are',body:`MockTest is a product of Anil Software Technologies, operated by Anil Kumar Mikkili, accessible at mocktest.anilsofttech.com. We provide expert-crafted mock tests for competitive exams including Bank Clerk Prelims, UPSC, SSC, and GATE.`},
+    {title:'1. Who we are',body:`MockTest is a product of Arkaserve, operated by Anil Kumar Mikkili, accessible at mocktest.arkaserve.com. We provide expert-crafted mock tests for competitive exams including Bank Clerk Prelims, UPSC, SSC, and GATE.`},
     {title:'2. What data we collect',list:['Account information: Full name, email address, target exam — provided at registration','Test data: Your answers, time spent per question, score, and performance metrics','Usage data: Pages visited, features used, session duration','Device data: Browser type, operating system, IP address for security purposes','We do NOT collect: Aadhaar, PAN, payment card details, biometric data, or location data']},
     {title:'3. Why we collect your data',list:['To create and manage your account','To generate personalised mock tests and track your progress','To provide automated weakness analysis and study recommendations','To generate solution PDFs for completed tests','To send important account notifications','We do NOT use your data for advertising or sell it to third parties — ever']},
     {title:'4. How we store and protect your data',body:`Your data is stored securely on Supabase (PostgreSQL) hosted on AWS. We use TLS 1.3 for data in transit and AES-256 for data at rest. We follow OWASP security standards including rate limiting, input validation, and security headers.`},
@@ -37,8 +37,8 @@ export default function PrivacyPage() {
               ))}</div>}
               {sec.contact&&<div style={{background:'#F8F8F8',border:'1px solid #EBEBEB',borderRadius:11,padding:18,fontSize:13,color:'#555',display:'flex',flexDirection:'column',gap:6}}>
                 <div><strong>Data Protection Officer:</strong> Anil Kumar Mikkili</div>
-                <div><strong>Website:</strong> www.anilsofttech.com</div>
-                <div><strong>Platform:</strong> mocktest.anilsofttech.com</div>
+                <div><strong>Website:</strong> www.arkaserve.com</div>
+                <div><strong>Platform:</strong> mocktest.arkaserve.com</div>
                 <div><strong>Response time:</strong> Within 30 working days</div>
               </div>}
             </div>

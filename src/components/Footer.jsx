@@ -81,9 +81,7 @@ const EXAM_CATS = [
 ]
 
 const COMPANY_LINKS = [
-  ['About Us', null, 'https://arkaserve.com/#about'],
-  ['Careers',  null, 'https://arkaserve.com/careers'],
-  ['Contact','contact'],['Courses','courses'],
+  ['About Us','about'],['Contact','contact'],['Courses','courses'],
   ['Privacy Policy','privacy'],['Terms of Use','terms'],
 ]
 
@@ -196,28 +194,20 @@ export default function Footer({ onNav }) {
               <p style={{ fontSize:13, color:'#6b7280', lineHeight:1.8, marginBottom:6, maxWidth:300 }}>
                 Expert-crafted mock tests for every major competitive exam. Banking, SSC, Railway and more — free for 7 days, no credit card required.
               </p>
-              <p style={{ fontSize:12, color:'#374151' }}>by Anil Software Technologies</p>
+              <p style={{ fontSize:12, color:'#374151' }}>by Arkaserve</p>
             </div>
 
             {/* Company */}
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:14 }}>Company</div>
               <ul style={{ listStyle:'none', padding:0, margin:0 }}>
-                {COMPANY_LINKS.map(([label, dest, href]) => (
+                {COMPANY_LINKS.map(([label, dest]) => (
                   <li key={label} style={{ marginBottom:10 }}>
-                    {href ? (
-                      <a href={href} target="_blank" rel="noopener noreferrer"
-                        style={{ fontSize:13, color:'#6b7280', textDecoration:'none', transition:'color .12s' }}
-                        onMouseOver={e => e.currentTarget.style.color='#FF653F'}
-                        onMouseOut={e => e.currentTarget.style.color='#6b7280'}
-                      >{label}</a>
-                    ) : (
-                      <button onClick={() => nav(dest)}
-                        style={{ background:'none', border:'none', padding:0, fontSize:13, color:'#6b7280', cursor:'pointer', transition:'color .12s', textAlign:'left' }}
-                        onMouseOver={e => e.currentTarget.style.color='#FF653F'}
-                        onMouseOut={e => e.currentTarget.style.color='#6b7280'}
-                      >{label}</button>
-                    )}
+                    <button onClick={() => nav(dest)}
+                      style={{ background:'none', border:'none', padding:0, fontSize:13, color:'#6b7280', cursor:'pointer', transition:'color .12s', textAlign:'left' }}
+                      onMouseOver={e => e.currentTarget.style.color='#FF653F'}
+                      onMouseOut={e => e.currentTarget.style.color='#6b7280'}
+                    >{label}</button>
                   </li>
                 ))}
               </ul>
@@ -261,7 +251,7 @@ export default function Footer({ onNav }) {
           <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:10 }}>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               <span style={{ fontSize:12, color:'#374151' }}>
-                © {new Date().getFullYear()} Anil Software Technologies · mocktest.anilsofttech.com · All rights reserved
+                © {new Date().getFullYear()} Arkaserve · mocktest.arkaserve.com · All rights reserved
               </span>
               {visitorCount !== null && (
                 <div style={{ display:'flex', alignItems:'center', gap:3 }}>

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Block internal/private pages from indexing
+Disallow: /dashboard
+Disallow: /exam
+Disallow: /result
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /payment
+
+Sitemap: https://mocktest.arkaserve.com/sitemap.xml
